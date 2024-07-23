@@ -7,7 +7,7 @@ interface DatabaseProductInterface
 {
    public function create(string $productData ): void;
    // public function selectAll(): array;
-   // public function selectById(int $id): object;
+   public function selectById(int $id): array;
    // public function update(array $array ): void;
    // public function delete(int $id): void;
 }

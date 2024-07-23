@@ -39,10 +39,27 @@ class ProductRepository implements ProductRepositoryInterface
         
     }
 
-    // public function findById(int $id): Product
-    // {
-    //     return $this->databaseInterface->selectById($id);
-    // }
+    public function findById(int $id): Product
+    {
+        try {
+          
+            $productData = $this->databaseProductInterface->selectById($id);
+         
+        } catch (\Throwable $th) {
+            throw new RuntimeException( $th->getMessage() );
+        }
+
+
+        return new Product(
+                $productData['id'],
+                $productData['code'],
+                $productData['type_product_id'],
+                $productData['name'],
+                $productData['value'],
+                formatDate($productData['created_at']),
+                formatDate($productData['updated_at'])
+        );
+    }
 
     // public function findAll(): array
     // {

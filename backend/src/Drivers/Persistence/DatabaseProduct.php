@@ -3,7 +3,6 @@
 namespace App\Drivers\Persistence;
 
 use App\Infrastructure\Persistence\DatabaseProductInterface;
-use JsonException;
 use PDO;
 use RuntimeException;
 
@@ -19,7 +18,7 @@ class DatabaseProduct implements DatabaseProductInterface
 
         try {
             //code...
-            $this->validateJson($productData);
+            validateJson($productData);
 
             $arrayDecoded = json_decode($productData, true, 512, JSON_THROW_ON_ERROR);
 
@@ -52,10 +51,28 @@ class DatabaseProduct implements DatabaseProductInterface
         
     }
 
-    private function validateJson(string $productData): void 
+    public function selectById(int $product_id): array
     {
-        if (!json_validate($productData)) {
-            throw new JsonException('Json for Product is invalid');
+        $this->pdo = $this->connect();
+
+        try {
+            
+            $sql = "SELECT id, code, type_product_id, name, value, created_at, updated_at
+                        FROM products 
+                        WHERE id = :id AND deleted_at IS NULL";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':id', $product_id, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $product = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            validatePDO($product);
+
+            return $product;
+        } catch(\PDOException $e) {
+            throw new RuntimeException($e->getMessage());
+
         }
     }
 }

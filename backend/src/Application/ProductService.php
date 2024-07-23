@@ -3,6 +3,7 @@
 namespace App\Application;
 
 use App\Domain\Dtos\ProductDto;
+use App\Domain\Entities\Product;
 use App\Domain\Repositories\ProductRepositoryInterface;
 
 class ProductService 
@@ -24,6 +25,22 @@ class ProductService
                 );
 
         $this->productRepository->create($product);
+    }
+
+    public function findProductById(int $id): array
+    {
+        $product =  $this->productRepository->findById($id);
+       
+        return [
+            
+            'id'                => $product->getId(),
+            'code'              => $product->getCode(),
+            'type_product_id'   => $product->getTypeProductId(),
+            'name'              => $product->getName(),
+            'value'             => $product->getValue(),
+            'created_at'        => $product->getCreatedAt(),
+            'updated_at'        => $product->getUpdatedAt(),
+        ];
     }
 
     

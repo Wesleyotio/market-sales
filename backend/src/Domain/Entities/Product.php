@@ -22,8 +22,7 @@ class Product
         string $name,
         float $value, 
         DateTime $createdAt, 
-        DateTime $updatedAt, 
-        DateTime $deletedAt, 
+        DateTime $updatedAt
     ) {
         $this->id = $id;
         $this->code = $code;
@@ -32,7 +31,7 @@ class Product
         $this->value = $value;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
-        $this->deletedAt = $deletedAt;
+       
     }
     
     public function getId(): int 
