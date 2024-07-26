@@ -43,5 +43,9 @@ class ProductService
         ];
     }
 
+    public function findAllProducts(): array 
+    {
+        return  $this->productRepository->findAll();
+    }
     
 }

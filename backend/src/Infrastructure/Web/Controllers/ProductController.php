@@ -66,4 +66,25 @@ class ProductController
         $response->getBody()->write($encodedEntity);
         return $response->withStatus(200);
     }
+    public function findAll(Request $request, Response $response, array $args): Response 
+    {
+      
+
+        try {
+            //code...
+           
+            $productsEntities = $this->productService->findAllProducts();
+        } catch (\Throwable $th) {
+            $response->getBody()->write($th->getMessage());
+            return $response->withStatus(500);
+        }
+
+        $encodedProducts = json_encode(
+            $productsEntities,
+            JSON_THROW_ON_ERROR
+        );
+
+        $response->getBody()->write($encodedProducts);
+        return $response->withStatus(200);
+    }
 }

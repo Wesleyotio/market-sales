@@ -75,4 +75,27 @@ class DatabaseProduct implements DatabaseProductInterface
 
         }
     }
+
+    public function selectAll(): array
+    {
+        $this->pdo = $this->connect();
+
+        try {
+            
+            $sql = "SELECT id, code, type_product_id, name, value, created_at, updated_at
+                        FROM products 
+                        WHERE deleted_at IS NULL";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $products = $stmt->fetchAll(PDO::FETCH_DEFAULT);
+
+            validatePDO($products);
+            
+            return $products;
+        } catch(\PDOException $e) {
+            throw new RuntimeException($e->getMessage());
+
+        }
+    }
 }

@@ -61,10 +61,27 @@ class ProductRepository implements ProductRepositoryInterface
         );
     }
 
-    // public function findAll(): array
-    // {
-    //     return $this->databaseInterface->selectAll();
-    // }
+    public function findAll(): array
+    {
+        $products =  $this->databaseProductInterface->selectAll();
+
+        $arrayProducts = [];
+        foreach($products as $productData) {
+
+            $object = [
+                'id'                => $productData['id'],
+                'code'              => $productData['code'],
+                'type_product_id'   => $productData['type_product_id'],
+                'name'              => $productData['name'],
+                'value'             => $productData['value'],
+                'created_at'        => formatDate($productData['created_at']),
+                'updated_at'        => formatDate($productData['updated_at'])
+            ];
+            array_push($arrayProducts, $object);
+        }
+
+        return $arrayProducts;
+    }
 
     // public function update(array $array): void
     // {
