@@ -1,34 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit 
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
-        bootstrap="vendor/autoload.php"
-        colors="true"
-        verbose="true"
->
-    
-    <testsuites>
-        <testsuite name="units">
-            <directory suffix="Test.php">./tests/units</directory>
-        </testsuite>
-        <testsuite name="Application Test Suite">
-            <directory suffix="Test.php">./tests</directory>
-        </testsuite>
-    </testsuites>
-
-    <php>
-        <env name="APP_ENV" value="testing"/>
-    </php>
-
-    <logging>
-        <log type="junit" target="build/logs/junit.xml"/>
-        <log type="coverage-html" target="build/coverage-html"/>
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
-    </logging>
-
-    <coverage processUncoveredFiles="true">
-        <include>
-            <directory>src</directory>
-        </include>
-    </coverage>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.2/phpunit.xsd" 
+          bootstrap="vendor/autoload.php"
+          failOnRisky="true" failOnWarning="true"
+          colors="true" 
+          cacheDirectory="./storage/logs/phpunit.cache">
+  <testsuites>
+    <testsuite name="units">
+      <directory suffix="Test.php">./tests/units</directory>
+    </testsuite>
+    <testsuite name="integration">
+      <directory suffix="Test.php">./tests/integration</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <env name="APP_ENV" value="testing"/>
+  </php>
+  <logging>
+    <junit outputFile="./storage/logs/junit.xml"/>
+    <teamcity outputFile="./storage/logs/teamcity.txt"/>
+    <testdoxHtml outputFile="./storage/logs/testdox.html"/>
+    <testdoxText outputFile="./storage/logs/testdox.txt"/>
+  </logging>
+  <source>
+    <include>
+      <directory>src</directory>
+    </include>
+  </source>
 </phpunit>
