@@ -2,12 +2,9 @@
 
 namespace App\Application\UseCases;
 
-
-use App\Domain\Entities\Product;
 use App\Domain\Repositories\ProductRepositoryInterface;
 
-
-class FindProductUseCase
+class DeleteProductUseCase
 {
     private ProductRepositoryInterface $productRepository;
 
@@ -16,9 +13,8 @@ class FindProductUseCase
         $this->productRepository = $productRepository;
     }
 
-    public function action(int $id): Product
+    public function action(int $id): ?int
     {
-        $product = $this->productRepository->findById($id);
-        return $product;
+        return $this->productRepository->delete($id);
     }
 }
