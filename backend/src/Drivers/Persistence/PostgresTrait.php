@@ -1,16 +1,18 @@
 <?php
 
 namespace App\Drivers\Persistence;
+
 use PDO;
 use Dotenv\Dotenv;
-trait PostgresTrait 
+use Symfony\Component\HttpFoundation\Response;
+
+trait PostgresTrait
 {
     private PDO $pdo;
 
-    public function connect(): PDO 
+    public function connect(): PDO
     {
         try {
-
             $dotenv = Dotenv::createImmutable(__DIR__ . "/../../../config/");
             $dotenv->load();
 
@@ -19,17 +21,15 @@ trait PostgresTrait
             $dbDatabase = $_ENV['DB_DATABASE'];
             $dbUsername = $_ENV['DB_USERNAME'];
             $dbPassword = $_ENV['DB_PASSWORD'];
-            
+
 
             $dsn = "pgsql:host={$dbHost};port={$dbPort};dbname={$dbDatabase}";
             $this->pdo = new PDO($dsn, $dbUsername, $dbPassword);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            
         } catch (\PDOException $e) {
-            throw new \Exception("Connection failed: " . $e->getMessage());
+            throw new \App\Infrastructure\Exceptions\DataBaseException("Connection failed: " . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR, $e);
         }
 
         return $this->pdo;
     }
-
 }
