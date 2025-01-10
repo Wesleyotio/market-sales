@@ -2,11 +2,15 @@
 
 namespace App\Application;
 
-use App\Domain\Dtos\ProductDto;
-use App\Domain\Entities\Product;
+use App\Application\UseCases\FindProductUseCase;
+use App\Application\UseCases\UpdateProductUseCase;
+use App\Application\UseCases\CreateProductUseCase;
+use App\Application\Exceptions\ProductException;
+use App\Application\UseCases\DeleteProductUseCase;
+use App\Application\UseCases\FindAllProductUseCase;
 use App\Domain\Repositories\ProductRepositoryInterface;
 
-class ProductService 
+class ProductService
 {
     private ProductRepositoryInterface $productRepository;
 
@@ -17,22 +21,28 @@ class ProductService
 
     public function createProduct(array $product): void
     {
-        $product = new ProductDto(
-                    $product['code'],
-                    $product['type_product_id'],
-                    $product['name'],
-                    $product['value'],
-                );
 
-        $this->productRepository->create($product);
+        $arrayKeys = ['code', 'type_product_id', 'name', 'value'];
+        if (! validateArrayKeys($arrayKeys, $product)) {
+            throw new ProductException("Product has missing fields");
+        }
+
+        $createProductUseCase = new CreateProductUseCase($this->productRepository);
+        $createProductUseCase->action(
+            $product['code'],
+            $product['type_product_id'],
+            $product['name'],
+            $product['value']
+        );
     }
 
     public function findProductById(int $id): array
     {
-        $product =  $this->productRepository->findById($id);
-       
+        $findProductUseCase = new FindProductUseCase($this->productRepository);
+        $product =  $findProductUseCase->action($id);
+
         return [
-            
+
             'id'                => $product->getId(),
             'code'              => $product->getCode(),
             'type_product_id'   => $product->getTypeProductId(),
@@ -43,9 +53,39 @@ class ProductService
         ];
     }
 
-    public function findAllProducts(): array 
+    public function findAllProducts(): array
     {
-        return  $this->productRepository->findAll();
+        $findAllProductUseCase = new FindAllProductUseCase($this->productRepository);
+        return $findAllProductUseCase->action();
     }
-    
+
+    public function updateProduct(int $id, array $productData): ?int
+    {
+        $arrayKeys = ['code', 'type_product_id', 'name', 'value'];
+
+        if (! validateKeysContainedInArray(array_keys($productData), $arrayKeys)) {
+            throw new ProductException("unknown fields are being passed for product update");
+        }
+
+        $updateProductUseCase = new UpdateProductUseCase($this->productRepository);
+        return $updateProductUseCase->action($id, $productData);
+    }
+
+    public function updateProductAll(int $id, array $productData): ?int
+    {
+
+        $arrayKeys = ['code', 'type_product_id', 'name', 'value'];
+        if (! validateArrayKeys($arrayKeys, $productData)) {
+            throw new ProductException("product has missing fields for update complete");
+        }
+
+        $updateProductUseCase = new UpdateProductUseCase($this->productRepository);
+        return $updateProductUseCase->action($id, $productData);
+    }
+
+    public function deleteProduct(int $id): ?int
+    {
+        $deleteProductUseCase = new DeleteProductUseCase($this->productRepository);
+        return $deleteProductUseCase->action($id);
+    }
 }
