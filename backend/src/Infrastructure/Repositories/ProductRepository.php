@@ -7,8 +7,9 @@ use App\Domain\Entities\Product;
 use App\Domain\Repositories\ProductRepositoryInterface;
 use App\Infrastructure\Persistence\DatabaseProductInterface;
 use RuntimeException;
+use Symfony\Component\HttpFoundation\Response;
 
-class ProductRepository implements ProductRepositoryInterface 
+class ProductRepository implements ProductRepositoryInterface
 {
     private DatabaseProductInterface $databaseProductInterface;
 
@@ -16,7 +17,7 @@ class ProductRepository implements ProductRepositoryInterface
     {
         $this->databaseProductInterface = $databaseProductInterface;
     }
-    
+
     public function create(ProductDto $product): void
     {
 
@@ -28,70 +29,43 @@ class ProductRepository implements ProductRepositoryInterface
         ];
 
         try {
-           
             $jsonProduct = json_encode($arrayProduct, JSON_THROW_ON_ERROR);
-
         } catch (\JsonException $th) {
-            throw new RuntimeException('ProductDataInvalid');
+            throw new RuntimeException('Failure to convert to json object', Response::HTTP_INTERNAL_SERVER_ERROR, $th);
         }
-        
+
         $this->databaseProductInterface->create($jsonProduct);
-        
     }
 
     public function findById(int $id): Product
     {
-        try {
-          
-            $productData = $this->databaseProductInterface->selectById($id);
-         
-        } catch (\Throwable $th) {
-            throw new RuntimeException( $th->getMessage() );
-        }
 
+
+        $productData = $this->databaseProductInterface->selectById($id);
 
         return new Product(
-                $productData['id'],
-                $productData['code'],
-                $productData['type_product_id'],
-                $productData['name'],
-                $productData['value'],
-                formatDate($productData['created_at']),
-                formatDate($productData['updated_at'])
+            $productData['id'],
+            $productData['code'],
+            $productData['type_product_id'],
+            $productData['name'],
+            $productData['value'],
+            formatDate($productData['created_at']),
+            formatDate($productData['updated_at'])
         );
     }
 
     public function findAll(): array
     {
-        $products =  $this->databaseProductInterface->selectAll();
-
-        $arrayProducts = [];
-        foreach($products as $productData) {
-
-            $object = [
-                'id'                => $productData['id'],
-                'code'              => $productData['code'],
-                'type_product_id'   => $productData['type_product_id'],
-                'name'              => $productData['name'],
-                'value'             => $productData['value'],
-                'created_at'        => formatDate($productData['created_at']),
-                'updated_at'        => formatDate($productData['updated_at'])
-            ];
-            array_push($arrayProducts, $object);
-        }
-
-        return $arrayProducts;
+        return $this->databaseProductInterface->selectAll();
     }
 
-    // public function update(array $array): void
-    // {
-    //     $this->databaseInterface->update($array);   
-    // }
+    public function update(int $id, array $array): ?int
+    {
+        return $this->databaseProductInterface->update($id, $array);
+    }
 
-    // public function delete(int $id): void
-    // {
-    //     $this->databaseInterface->delete($id);
-    // }
-
-
+    public function delete(int $id): ?int
+    {
+        return $this->databaseProductInterface->delete($id);
+    }
 }
