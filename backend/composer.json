@@ -17,7 +17,11 @@
             "Tests\\": "tests/",
             "Tests\\Integration\\": "tests/integration/",
             "Tests\\Units\\": "tests/units/"
-        }
+        },
+        "files": [
+            "helper/helper.php"
+        ]
+
     },
     "require": {
         "ext-pdo": "*",
@@ -33,6 +37,8 @@
     },
     "scripts": {
         "test": "phpunit",
+        "test-coverage-html": "phpunit --coverage-html storage/coverage/",
+        "test-coverage": "phpunit --coverage-text",
         "phpstan": "phpstan analyse -l 9 src helper",
         "phpcs": "phpcs  --standard=./.phpcs.xml",
         "phpcbf": "phpcbf"
