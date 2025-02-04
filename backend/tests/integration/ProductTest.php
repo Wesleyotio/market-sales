@@ -33,8 +33,15 @@ class ProductTest extends TestCase
 
     public function test_get_product_by_id()
     {
+    
+        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
 
-        $id = 1;
+        $listProductsBody = json_decode($response->getBody()->getContents(), true);
+
+        $lastElement = end($listProductsBody);
+
+        $id = $lastElement['id'];
+
         $response = $this->client->request(
             'GET',
             "/product/{$id}",
@@ -63,15 +70,22 @@ class ProductTest extends TestCase
         $dataResponse = json_decode($body, true);
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
-        $this->assertEquals("Id provider is invalid", $dataResponse['error']);
+        $this->assertEquals("ID is invalid for values less or equals zero", $dataResponse['error']);
     }
 
     public function test_create_products()
     {
+        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+
+        $listProductsBody = json_decode($response->getBody()->getContents(), true);
+
+        $lastElement = end($listProductsBody);
+
+        $code =  $lastElement['code'];
         $data = [
-            'code'              => 105,
+            'code'              => 5 + $code,
             'type_product_id'   => 1,
-            'name'              => 'produto1',
+            'name'              => 'produtoCreate',
             'value'             => 22.75,
         ];
         $response = $this->client->request(
@@ -82,7 +96,7 @@ class ProductTest extends TestCase
                 'json' => $data
             ]
         );
-
+        
         $body = (string) $response->getBody()->getContents();
 
         $dataResponse = json_decode($body, true);
@@ -95,7 +109,7 @@ class ProductTest extends TestCase
     public function test_failure_to_create_products()
     {
         $data = [
-            'code'              => 105,
+            'code'              => 12,
             // 'type_product_id'   => 1,
             'name'              => 'produto1',
             'value'             => 22.75,
@@ -115,6 +129,39 @@ class ProductTest extends TestCase
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
         $this->assertEquals("Product has missing fields", $dataResponse['error']);
+    }
+
+    public function test_failure_to_create_products_with_same_code()
+    {
+        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+
+        $listProductsBody = json_decode($response->getBody()->getContents(), true);
+
+        $lastElement = end($listProductsBody);
+
+        $code = $lastElement['code'];
+
+        $data = [
+            'code'              => $code,
+            'type_product_id'   => 1,
+            'name'              => 'produto1',
+            'value'             => 22.75,
+        ];
+        $response = $this->client->request(
+            'POST',
+            '/products',
+            [
+                'http_errors' => false,
+                'json' => $data
+            ]
+        );
+
+        $body = (string) $response->getBody()->getContents();
+
+        $dataResponse = json_decode($body, true);
+
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+        $this->assertEquals("Code has already been registered, use another code", $dataResponse['error']);
     }
 
     public function test_failure_convert_json_to_create_products()
@@ -142,9 +189,15 @@ class ProductTest extends TestCase
 
     public function test_update_all_product_by_id()
     {
-        $id = 1;
+        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+
+        $listProductsBody = json_decode($response->getBody()->getContents(), true);
+
+        $lastElement = end($listProductsBody);
+
+        $id = $lastElement['id'];
         $data = [
-            'code'              => 9999,
+            'code'              => 7 + $lastElement['code'],
             'type_product_id'   => 1,
             'name'              => 'produtoPUT',
             'value'             => 99.95,
@@ -165,7 +218,7 @@ class ProductTest extends TestCase
     {
         $id = -99;
         $data = [
-            'code'              => 9999,
+            'code'              => 16,
             'type_product_id'   => 1,
             'name'              => 'produtoPUT',
             'value'             => 99.95,
@@ -189,9 +242,15 @@ class ProductTest extends TestCase
 
     public function test_failure_update_all_product_with_incorrect_fields()
     {
-        $id = 2;
+        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+
+        $listProductsBody = json_decode($response->getBody()->getContents(), true);
+
+        $lastElement = end($listProductsBody);
+
+        $id = $lastElement['id'];
         $data = [
-            'codess'              => 9999,
+            'codess'              => 18,
             'type_product_id'   => 1,
             'name'              => 'produtoPUT',
             'value'             => 99.95,
@@ -210,11 +269,18 @@ class ProductTest extends TestCase
         $dataResponse = json_decode($body, true);
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
-        $this->assertEquals("product has missing fields for update complete", $dataResponse['error']);
+        $this->assertEquals("unknown fields are being passed for product update", $dataResponse['error']);
     }
+
     public function test_update_product_by_id()
     {
-        $id = 15;
+        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+
+        $listProductsBody = json_decode($response->getBody()->getContents(), true);
+
+        $lastElement = end($listProductsBody);
+
+        $id = $lastElement['id'];
         $data = [
             // 'codess'              => 9999,
             // 'type_product_id'   => 1,
@@ -240,7 +306,14 @@ class ProductTest extends TestCase
 
     public function test_failure_update_product_by_id()
     {
-        $id = 2;
+        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+
+        $listProductsBody = json_decode($response->getBody()->getContents(), true);
+
+        $lastElement = end($listProductsBody);
+
+        $id = $lastElement['id'];
+
         $data = [
             'codess'              => 9999,
             // 'type_product_id'   => 1,
@@ -266,8 +339,15 @@ class ProductTest extends TestCase
 
     public function test_delete_product_by_id()
     {
+        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+
+        $listProductsBody = json_decode($response->getBody()->getContents(), true);
+
+        $lastElement = end($listProductsBody);
+
+       
         $data = [
-            'code'              => 99,
+            'code'              => 11 + $lastElement['code'],
             'type_product_id'   => 1,
             'name'              => 'produtoParaDelete',
             'value'             => 999.99,
@@ -316,7 +396,7 @@ class ProductTest extends TestCase
 
     public function test_failure_delete_product_by_id()
     {
-        $id = 3;
+        $id = 99999;
 
         $response = $this->client->request(
             'DELETE',
