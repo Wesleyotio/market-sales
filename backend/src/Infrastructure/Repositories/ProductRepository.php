@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Repositories;
 
-use App\Domain\Dtos\ProductDto;
+use App\Application\Dtos\ProductDto;
 use App\Domain\Entities\Product;
 use App\Domain\Repositories\ProductRepositoryInterface;
 use App\Infrastructure\Persistence\DatabaseProductInterface;
@@ -37,11 +37,21 @@ class ProductRepository implements ProductRepositoryInterface
         $this->databaseProductInterface->create($jsonProduct);
     }
 
-    public function findById(int $id): Product
+    public function findCode(int $code): bool
+    {
+
+        return $this->databaseProductInterface->selectByCode($code);
+    }
+
+    public function findById(int $id): ?Product
     {
 
 
         $productData = $this->databaseProductInterface->selectById($id);
+
+        if (is_null($productData)) {
+            return null;
+        }
 
         return new Product(
             $productData['id'],

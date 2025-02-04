@@ -50,7 +50,27 @@ class DatabaseProduct implements DatabaseProductInterface
         }
     }
 
-    public function selectById(int $product_id): array
+    public function selectByCode(int $code): bool
+    {
+        $this->pdo = $this->connect();
+
+        try {
+            $sql = "SELECT id FROM products WHERE code = :code";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':code', $code, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+            return empty($result) ? false : true;
+        } catch (\PDOException $e) {
+            throw new DataBaseException($e->getMessage(), previous: $e);
+        }
+    }
+
+    public function selectById(int $product_id): ?array
     {
         $this->pdo = $this->connect();
 
@@ -65,9 +85,8 @@ class DatabaseProduct implements DatabaseProductInterface
 
             $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            validatePDO($product);
 
-            return $product;
+            return is_array($product) ? $product : null;
         } catch (\PDOException $e) {
             throw new DataBaseException($e->getMessage(), previous: $e);
         }
