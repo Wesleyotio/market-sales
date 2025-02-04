@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Units\Application\UseCases;
 
+
 use App\Application\UseCases\CreateProductUseCase;
+use App\Application\Dtos\ProductDto;
 use App\Domain\Repositories\ProductRepositoryInterface;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use TypeError;
+
 
 class CreateProductUseCaseTest extends TestCase
 {
@@ -21,18 +22,27 @@ class CreateProductUseCaseTest extends TestCase
         
     }
 
-    #[DataProvider('valueProvider')]
-    public function test_throws_exception_when_any_parameter_is_invalid($code, $type_product_id, $name, $value) 
+    public function test_throws_exception_when_any_parameter_code_is_invalid() 
     {
         $createProductUseCase = new CreateProductUseCase($this->productRepository);
         
-        $this->expectException(TypeError::class);
+        $productDto = new ProductDto(98,1,'ProductRepeat',100.25);    
         
         $this->productRepository
-                ->expects($this->never())
-                ->method('create');
+            ->expects($this->once())
+            ->method('findCode')
+            ->willReturn(true);
         
-        $createProductUseCase->action($code, $type_product_id, $name, $value);
+        $this->productRepository
+            ->expects($this->never())
+            ->method('create');
+
+        
+        $this->expectException(\App\Application\Exceptions\ProductException::class);
+
+        
+
+        $createProductUseCase->action($productDto);
 
     }
 
@@ -40,26 +50,20 @@ class CreateProductUseCaseTest extends TestCase
     {
         
         $createProductUseCase = new CreateProductUseCase($this->productRepository);
-        
+
+        $productDto = new ProductDto(98,1,'ProductName',100.25);  
+        $this->productRepository
+                ->expects($this->once())
+                ->method('findCode')
+                ->willReturn(false);
       
         $this->productRepository
                 ->expects($this->once())
-                ->method('create');
-        
-        $createProductUseCase->action(97, 1, 'productName', 76.5);
+                ->method('create')
+                ->with($productDto);
+
+        $createProductUseCase->action($productDto);
     }
 
-    public static function valueProvider()
-    {
-        return [
-            'when_code_is_Invalid' => [ 'code' => 'text', 'type_product_id' => 1, 'name' => 'ProductName' , 'value' => 99.9 ],
-
-            'when_type_product_is_invalid' => [ 'code' => 100, 'type_product_id' => 'text', 'name' => 'ProductName' , 'value' => 98.7 ],
-
-            'when_name_is_invalid' => [ 'code' => 99, 'type_product_id' => 1, 'name' => 25 , 'value' => 87.6 ],
-
-            'when_value_is_invalid' => [ 'code' => 98, 'type_product_id' => 1, 'name' => 'ProductName' , 'value' => 'text' ],
-            
-        ];
-    }
+ 
 }
