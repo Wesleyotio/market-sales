@@ -2,10 +2,9 @@
 
 namespace App\Application\UseCases;
 
-
-use App\Domain\Entities\Product;
+use App\Application\Dtos\ProductDto;
 use App\Domain\Repositories\ProductRepositoryInterface;
-
+use App\Infrastructure\Exceptions\ClientException;
 
 class FindProductUseCase
 {
@@ -16,9 +15,18 @@ class FindProductUseCase
         $this->productRepository = $productRepository;
     }
 
-    public function action(int $id): Product
+    public function action(int $id): ProductDto
     {
+
+        if ($id <= 0) {
+            throw new ClientException("ID is invalid for values less or equals zero");
+        }
+
         $product = $this->productRepository->findById($id);
-        return $product;
+
+        if (is_null($product)) {
+            throw new ClientException("there is no matching product for the ID");
+        }
+        return ProductDto::fromEntity($product);
     }
 }

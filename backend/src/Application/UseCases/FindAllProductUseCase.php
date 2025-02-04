@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Application\UseCases;
 
+use App\Application\Dtos\ProductDto;
 use App\Domain\Entities\Product;
 use App\Domain\Repositories\ProductRepositoryInterface;
-use Datetime;
-use RuntimeException;
+use DateTimeImmutable;
 
 class FindAllProductUseCase
 {
@@ -21,22 +23,17 @@ class FindAllProductUseCase
 
         $products = $this->productRepository->findAll();
 
-        $arrayProducts = [];
-        if (!empty($products)) {
-            foreach ($products as $productData) {
-                $object = [
-                    'id'                => $productData['id'],
-                    'code'              => $productData['code'],
-                    'type_product_id'   => $productData['type_product_id'],
-                    'name'              => $productData['name'],
-                    'value'             => $productData['value'],
-                    'created_at'        => formatDate($productData['created_at']),
-                    'updated_at'        => formatDate($productData['updated_at'])
-                ];
-                array_push($arrayProducts, $object);
-            }
-        }
-
-        return $arrayProducts;
+        return array_map(function (array $productData) {
+            $product = new ProductDto(
+                $productData['code'],
+                $productData['type_product_id'],
+                $productData['name'],
+                (float) $productData['value'],
+                $productData['id'],
+                formatDate($productData['created_at']),
+                formatDate($productData['updated_at'])
+            );
+            return $product->toArray();
+        }, $products);
     }
 }
