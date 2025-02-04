@@ -28,6 +28,7 @@ final class Version20241121232600 extends AbstractMigration
                             created_at timestamp,
                             updated_at timestamp,
                             deleted_at timestamp default null,
+                            unique (code),
                             
                             CONSTRAINT pk_product
                                 primary key (id),

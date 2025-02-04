@@ -41,7 +41,10 @@
         "test-coverage": "phpunit --coverage-text",
         "phpstan": "phpstan analyse -l 9 src helper",
         "phpcs": "phpcs  --standard=./.phpcs.xml",
-        "phpcbf": "phpcbf"
+        "phpcbf": "phpcbf",
+        "migrations": "doctrine-migrations",
+        "migrations-generate": "doctrine-migrations generate",
+        "migrations-test": "doctrine-migrations migrate --dry-run"
     },
     "require-dev": {
         "phpunit/phpunit": "^11.2",
