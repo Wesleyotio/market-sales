@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Formata uma data no formato yyyy/mm/dd H:i:s
  *
  * @param string $date
- * @return Datetime
+ * @return DateTimeImmutable
  */
-function formatDate($date) {
-    return  date_create_from_format('Y-m-d H:i:s', $date);
+function formatDate(string $date): DateTimeImmutable 
+{
+    return DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $date);
 }
 
 
@@ -35,4 +38,34 @@ function validateJson(string $objectData): void
     if (!json_validate($objectData)) {
         throw new JsonException('Json for object is invalid');
     }
+}
+
+/**
+ * valida se um array possui todas as chaves esperadas
+ *
+ * @param array $requireKeys
+ * @param array $arrayForCheck
+ * @return bool 
+ */
+function validateArrayKeys(array $requireKeys, array $arrayForCheck): bool 
+{
+    $missingKeys = array_diff($requireKeys, array_keys($arrayForCheck));
+    return empty($missingKeys);
+}
+
+/**
+ * valida se as chaves um array está contido na chaves em outro array
+ *
+ * @param array $subArrayKeys
+ * @param array $superArrayKeys
+ * @return bool 
+ */
+function validateKeysContainedInArray(array $subArrayKeys, array $superArrayKeys): bool 
+{
+    foreach ($subArrayKeys as $key) {
+        if (!in_array($key, $superArrayKeys)) {
+            return false;
+        }
+    }
+    return true;
 }
