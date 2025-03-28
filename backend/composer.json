@@ -39,7 +39,7 @@
         "test": "phpunit",
         "test-coverage-html": "phpunit --coverage-html storage/coverage/",
         "test-coverage": "phpunit --coverage-text",
-        "phpstan": "phpstan analyse -l 9 src helper",
+        "phpstan": "phpstan analyse -c phpstan.neon",
         "phpcs": "phpcs  --standard=./.phpcs.xml",
         "phpcbf": "phpcbf",
         "migrations": "doctrine-migrations",
