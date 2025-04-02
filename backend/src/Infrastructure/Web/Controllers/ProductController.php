@@ -2,31 +2,42 @@
 
 namespace App\Infrastructure\Web\Controllers;
 
-use App\Application\ProductService;
+use App\Application\UseCases\CreateProductUseCase;
+use App\Application\UseCases\DeleteProductUseCase;
+use App\Application\UseCases\FindAllProductUseCase;
+use App\Application\UseCases\FindProductUseCase;
+use App\Application\UseCases\UpdateProductUseCase;
+use App\Application\Dtos\ProductDto;
+use App\Application\Dtos\ProductUpdateDto;
+use App\Application\Exceptions\ProductException;
 use App\Infrastructure\Exceptions\ClientException;
+use App\Infrastructure\Exceptions\DataBaseException;
 use Symfony\Component\HttpFoundation\Response as ResponseCode;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class ProductController
 {
-    private ProductService $productService;
-
-
     public function __construct(
-        ProductService $productService,
+        private CreateProductUseCase $createProductUseCase,
+        private FindProductUseCase $findProductUseCase,
+        private FindAllProductUseCase $findAllProductUseCase,
+        private UpdateProductUseCase $updateProductUseCase,
+        private DeleteProductUseCase $deleteProductUseCase,
     ) {
-        $this->productService = $productService;
     }
 
     public function create(Request $request, Response $response): Response
     {
-        $dataProduct = $request->getParsedBody();
-        $response = $response->withHeader('Content-Type', 'application/json');
 
+        $response = $response->withHeader('Content-Type', 'application/json');
+       
         try {
-            //code...
-            $this->productService->createProduct($dataProduct);
+            $productData = formatRequestInProductData($request);
+            
+            $productDto = ProductDto::fromRequest($productData);
+
+            $this->createProductUseCase->action($productDto);
         } catch (\TypeError $th) {
             $response->getBody()->write(
                 json_encode(
@@ -38,7 +49,7 @@ class ProductController
             );
 
             return $response->withStatus(ResponseCode::HTTP_BAD_REQUEST);
-        } catch (\APP\Application\Exceptions\ProductException $th) {
+        } catch (ProductException $th) {
             $response->getBody()->write(
                 json_encode(
                     [
@@ -49,7 +60,7 @@ class ProductController
             );
 
             return $response->withStatus(ResponseCode::HTTP_BAD_REQUEST);
-        } catch (\APP\Infrastructure\Exceptions\DataBaseException $th) {
+        } catch (DataBaseException $th) {
             $response->getBody()->write(
                 json_encode(
                     [
@@ -82,18 +93,20 @@ class ProductController
         return $response->withStatus(ResponseCode::HTTP_CREATED);
     }
 
+    /**
+    * @param Response $response
+    * @param array{id: int} $args
+    * @return Response
+    */
     public function findById(Request $request, Response $response, array $args): Response
     {
         $response = $response->withHeader('Content-Type', 'application/json');
 
         try {
-            $productId = $args["id"];
+            $productId = formatArgsForId($args);
 
-            if ($productId <= 0) {
-                throw new ClientException("Id provider is invalid");
-            }
+            $productEntity = $this->findProductUseCase->action($productId);
 
-            $productEntity = $this->productService->findProductById($productId);
         } catch (\App\Infrastructure\Exceptions\ClientException $ex) {
             $messageException = json_encode(
                 ["error" => $ex->getMessage()],
@@ -124,22 +137,25 @@ class ProductController
         }
 
         $encodedEntity = json_encode(
-            $productEntity,
+            $productEntity->toArray(),
             JSON_THROW_ON_ERROR
         );
 
         $response->getBody()->write($encodedEntity);
         return $response->withStatus(ResponseCode::HTTP_OK);
     }
-    public function findAll(Request $request, Response $response, array $args): Response
+
+    /**
+    * @param Response $response
+    * @return Response
+    */
+    public function findAll(Request $request, Response $response): Response
     {
 
         $response = $response->withHeader('Content-Type', 'application/json');
 
         try {
-            //code...
-
-            $productsEntities = $this->productService->findAllProducts();
+            $productsEntities = $this->findAllProductUseCase->action();
         } catch (\Throwable $th) {
             $messageException = json_encode(
                 ["error" => $th->getMessage()],
@@ -158,20 +174,25 @@ class ProductController
         return $response->withStatus(ResponseCode::HTTP_OK);
     }
 
+    /**
+    * @param Request $request
+    * @param Response $response
+    * @param array{id: int} $args
+    * @return Response
+    */
     public function update(Request $request, Response $response, array $args): Response
     {
         $response = $response->withHeader('Content-Type', 'application/json');
+       
         try {
-            //code...
-            $productId = $args["id"];
+            
+            $productId = formatArgsForId($args);
 
-            if ($productId <= 0) {
-                throw new ClientException("Id provider is invalid");
-            }
+            $productData = formatRequestInProductDataUpdate($request);
 
-            $productData = $request->getParsedBody();
+            $productUpdateDto = ProductUpdateDto::fromRequest($productData);
 
-            if ($this->productService->updateProduct($productId, $productData) == null) {
+            if ($this->updateProductUseCase->action($productId, $productUpdateDto->toArray()) == null) {
                 $messageException = json_encode(
                     ["error" => "o matching rows found for update"],
                     JSON_THROW_ON_ERROR
@@ -196,7 +217,7 @@ class ProductController
 
             $response->getBody()->write($messageException);
             return $response->withStatus(ResponseCode::HTTP_BAD_REQUEST);
-        } catch (\APP\Application\Exceptions\ProductException $th) {
+        } catch (ProductException $th) {
             $messageException = json_encode(
                 ["error" => $th->getMessage()],
                 JSON_THROW_ON_ERROR
@@ -204,7 +225,7 @@ class ProductController
 
             $response->getBody()->write($messageException);
             return $response->withStatus(ResponseCode::HTTP_BAD_REQUEST);
-        } catch (\APP\Infrastructure\Exceptions\DataBaseException $th) {
+        } catch (DataBaseException $th) {
             $messageException = json_encode(
                 ["error" => $th->getMessage()],
                 JSON_THROW_ON_ERROR
@@ -226,20 +247,25 @@ class ProductController
         return $response->withStatus(ResponseCode::HTTP_NO_CONTENT);
     }
 
+    /**
+    * @param Request $request
+    * @param Response $response
+    * @param array{id: int} $args
+    * @return Response
+    */
     public function updateALL(Request $request, Response $response, array $args): Response
     {
         $response = $response->withHeader('Content-Type', 'application/json');
+       
         try {
-            //code...
-            $productId = $args["id"];
+            
+            $productId = formatArgsForId($args);
 
-            if ($productId <= 0) {
-                throw new ClientException("Id provider is invalid", ResponseCode::HTTP_BAD_REQUEST);
-            }
+            $productData = formatRequestInProductDataUpdate($request);
 
-            $productData = $request->getParsedBody();
+            $productUpdateDto = ProductUpdateDto::fromRequest($productData);
 
-            if ($this->productService->updateProductAll($productId, $productData) == null) {
+            if ($this->updateProductUseCase->action($productId, $productUpdateDto->toArray()) == null) {
                 $messageException = json_encode(
                     ["error" => "o matching rows found for update"],
                     JSON_THROW_ON_ERROR
@@ -250,6 +276,14 @@ class ProductController
                 return $response->withStatus(ResponseCode::HTTP_NOT_FOUND);
             };
         } catch (\App\Infrastructure\Exceptions\ClientException $ex) {
+            $messageException = json_encode(
+                ["error" => $ex->getMessage()],
+                JSON_THROW_ON_ERROR
+            );
+
+            $response->getBody()->write($messageException);
+            return $response->withStatus(ResponseCode::HTTP_BAD_REQUEST);
+        } catch (\InvalidArgumentException $ex) {
             $messageException = json_encode(
                 ["error" => $ex->getMessage()],
                 JSON_THROW_ON_ERROR
@@ -268,7 +302,7 @@ class ProductController
             );
 
             return $response->withStatus(ResponseCode::HTTP_BAD_REQUEST);
-        } catch (\APP\Application\Exceptions\ProductException $th) {
+        } catch (ProductException $th) {
             $response->getBody()->write(
                 json_encode(
                     [
@@ -279,7 +313,7 @@ class ProductController
             );
 
             return $response->withStatus(ResponseCode::HTTP_BAD_REQUEST);
-        } catch (\APP\Infrastructure\Exceptions\DataBaseException $th) {
+        } catch (DataBaseException $th) {
             $response->getBody()->write(
                 json_encode(
                     [
@@ -307,18 +341,20 @@ class ProductController
         return $response->withStatus(ResponseCode::HTTP_NO_CONTENT);
     }
 
+    /**
+    * @param Response $response
+    * @param array{id: int} $args
+    * @return Response
+    */
     public function delete(Request $request, Response $response, array $args): Response
     {
         $response = $response->withHeader('Content-Type', 'application/json');
 
         try {
-            $productId = $args["id"];
+            $productId = formatArgsForId($args);
 
-            if ($productId <= 0) {
-                throw new ClientException("Id provider is invalid");
-            }
-
-            if ($this->productService->deleteProduct($productId) == null) {
+            
+            if ($this->deleteProductUseCase->action($productId) == null) {
                 $messageException = json_encode(
                     ["error" => "id does not match any item"],
                     JSON_THROW_ON_ERROR
