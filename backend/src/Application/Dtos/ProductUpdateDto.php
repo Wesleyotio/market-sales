@@ -19,7 +19,16 @@ class ProductUpdateDto
         private ?DateTimeImmutable $updatedAt = null,
     ) {
     }
+    
 
+    /**
+     * @param array{
+     *   code?: int,
+     *   type_product_id?: int,
+     *   name?: string,
+     *   value?: float
+     * } $productData
+     */
     public static function fromRequest(array $productData): self
     {
 
@@ -30,20 +39,25 @@ class ProductUpdateDto
         }
 
         foreach ($productData as $key => $value) {
-            if (($key == 'code') && (!is_int($value)) && ($value <= 0)) {
-                throw new TypeError("O parâmetro code: {$value} precisa ser do tipo Inteiro maior que zero");
-            }
-
-            if (($key == 'type_product_id') && !is_int($value) && ($value <= 0)) {
-                throw new TypeError("O parâmetro type_product_id: {$value} precisa ser do tipo Inteiro maior que zero");
-            }
-
-            if (($key == 'name') && !is_string($value) && (!empty($value))) {
-                throw new TypeError("O parâmetro name: {$value} precisa ser do tipo string não vazia");
-            }
-
-            if (($key == 'value') && (!is_float($value)) && ($value <= 0)) {
-                throw new TypeError("O parâmetro value: {$value} precisa ser do tipo float maior que zero");
+            switch ($key) {
+                case 'code':
+                    if ( (is_int($value) == false) || ($value <= 0)) throw new TypeError("O parâmetro code: {$value} precisa ser do tipo Inteiro e ser maior que zero");
+                    break;
+                    
+                case 'type_product_id':
+                    if ( (is_int($value) == false) || ($value <= 0)) throw new TypeError("O parâmetro type_product_id: {$value} precisa ser do tipo Inteiro e maior que zero");
+                    break;
+                    
+                case 'name':
+                    if ( (is_string($value) == false) || empty($value) ) throw new TypeError("O parâmetro name: {$value} precisa ser do tipo string e não vazia");
+                    break;
+                    
+                case 'value':
+                    if ( (is_float($value) == false) || ($value <= 0) ) throw new TypeError("O parâmetro value: {$value} precisa ser do tipo float e ser maior que zero");
+                    break;
+            
+                default:
+                    break;
             }
         }
 
@@ -66,6 +80,10 @@ class ProductUpdateDto
         );
     }
 
+
+    /**
+    * @return array<mixed> $productData
+    */
     public function toArray(): array
     {
         return array_filter([
@@ -79,27 +97,27 @@ class ProductUpdateDto
         }, ARRAY_FILTER_USE_BOTH);
     }
 
-    public function getCode(): int
+    public function getCode(): ?int
     {
         return $this->code;
     }
 
-    public function getTypeProductId(): int
+    public function getTypeProductId(): ?int
     {
         return $this->typeProductId;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function getValue(): float
+    public function getValue(): ?float
     {
         return $this->value;
     }
 
-    public function getUpdatedAt(): DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }

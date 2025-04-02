@@ -15,7 +15,11 @@ class UpdateProductUseCase
         $this->productRepository = $productRepository;
     }
 
-
+    /**
+     * @param int $id
+     * @param array<string|int,mixed> $productData
+     *
+    */
     public function action(int $id, array $productData): ?int
     {
 

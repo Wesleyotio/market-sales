@@ -18,11 +18,35 @@ class FindAllProductUseCase
         $this->productRepository = $productRepository;
     }
 
+    /**
+     * @return array<mixed> 
+     *
+    */
     public function action(): array
     {
 
         $products = $this->productRepository->findAll();
 
+        return $this->transformProducts($products);
+        
+    }
+
+    /**
+     * @param array<int, array{
+     *     code: int,
+     *     type_product_id: int,
+     *     name: string,
+     *     value: float,
+     *     id: int,
+     *     created_at: string,
+     *     updated_at: string
+     * }> $products
+     * 
+     * @return array<mixed>
+     */
+    private function transformProducts( array $products): array
+    {
+        
         return array_map(function (array $productData) {
             $product = new ProductDto(
                 $productData['code'],

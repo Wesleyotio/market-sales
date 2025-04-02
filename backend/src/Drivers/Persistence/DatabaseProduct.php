@@ -14,6 +14,17 @@ class DatabaseProduct implements DatabaseProductInterface
 
     private PDO $pdo;
 
+    /**
+    * @param string $productData JSON string:
+    * {
+    *     "code": int,
+    *     "type_product_id": int,
+    *     "name": string,
+    *     "value": float
+    * }
+    * @throws DataBaseException
+    * @throws \JsonException
+    */
     public function create(string $productData): void
     {
         $this->pdo = $this->connect();
@@ -22,6 +33,13 @@ class DatabaseProduct implements DatabaseProductInterface
             //code...
             validateJson($productData);
 
+            /** @var array{
+             *     code: int,
+             *     type_product_id: int,
+             *     name: string,
+             *     value: float
+             * } $arrayDecoded
+             */
             $arrayDecoded = json_decode($productData, true, 512, JSON_THROW_ON_ERROR);
 
             $createdAt = date('Y-m-d H:i:s');
@@ -70,6 +88,10 @@ class DatabaseProduct implements DatabaseProductInterface
         }
     }
 
+    /**
+     * @param int $product_id
+     * @return array<mixed>|null
+     */
     public function selectById(int $product_id): ?array
     {
         $this->pdo = $this->connect();
@@ -92,6 +114,10 @@ class DatabaseProduct implements DatabaseProductInterface
         }
     }
 
+    /**
+     * 
+     * @return array<mixed>
+     */
     public function selectAll(): array
     {
         $this->pdo = $this->connect();
@@ -113,6 +139,11 @@ class DatabaseProduct implements DatabaseProductInterface
         }
     }
 
+    /**
+     * @param int $id
+     * @param array<mixed> $productAttributes
+     * @return int|null
+     */
     public function update(int $id, array $productAttributes): ?int
     {
         $this->pdo = $this->connect();

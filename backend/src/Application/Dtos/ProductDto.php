@@ -22,13 +22,17 @@ readonly class ProductDto
     ) {
     }
 
+    /**
+    * @param array{'code': int, 'type_product_id': int, 'name': string, 'value': float} $productData
+    */
     public static function fromRequest(array $productData): self
     {
 
         $arrayKeys = ['code', 'type_product_id', 'name', 'value'];
         if (! validateArrayKeys($arrayKeys, $productData)) {
-                throw new ProductException("Product has missing fields");
+            throw new ProductException("Product has missing fields");
         }
+
         if ($productData['code'] <= 0) {
             throw new TypeError("O parâmetro code: {$productData['code']} precisa ser maior que zero");
         }
@@ -45,10 +49,10 @@ readonly class ProductDto
             throw new TypeError("O parâmetro value: {$productData['value']} não pode ser negativo");
         }
         return new self(
-            $productData['code'],
-            $productData['type_product_id'],
-            $productData['name'],
-            $productData['value']
+             $productData['code'],
+             $productData['type_product_id'],
+             $productData['name'],
+             $productData['value']
         );
     }
 
@@ -65,6 +69,9 @@ readonly class ProductDto
         );
     }
 
+    /**
+    * @return array<mixed> $productData
+    */
     public function toArray(): array
     {
         return array_filter([
