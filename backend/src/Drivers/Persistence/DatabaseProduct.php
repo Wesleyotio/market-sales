@@ -171,7 +171,7 @@ class DatabaseProduct implements DatabaseProductInterface
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
             $stmt->bindParam(':updated_at', $updatedAt);
             $stmt->execute();
-            if (!$stmt->rowCount()) {
+            if ($stmt->rowCount() === 0) {
                 return null;
             }
             return 1;
@@ -194,7 +194,7 @@ class DatabaseProduct implements DatabaseProductInterface
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
             $stmt->bindParam(':deleted_at', $deletedAt);
             $stmt->execute();
-            if (!$stmt->rowCount()) {
+            if ($stmt->rowCount() === 0) {
                 return null;
             }
              return 1;
