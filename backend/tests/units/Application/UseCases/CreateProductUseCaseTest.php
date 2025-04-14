@@ -13,8 +13,8 @@ use PHPUnit\Framework\TestCase;
 
 class CreateProductUseCaseTest extends TestCase
 {
-    
-    private ProductRepositoryInterface $productRepository;
+    /** @var ProductRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject */
+    private $productRepository;
 
     public function setUp(): void
     {

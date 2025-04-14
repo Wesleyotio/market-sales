@@ -18,6 +18,7 @@ class FindAllProductUseCaseTest extends TestCase
     #[DataProvider('valueProvider')]
     public function test_when_an_array_of_products_is_returned($expect) 
     {
+        /** @var ProductRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject */
         $productRepository = $this->createMock(ProductRepositoryInterface::class);
         $createProductUseCase = new FindAllProductUseCase( $productRepository);
         

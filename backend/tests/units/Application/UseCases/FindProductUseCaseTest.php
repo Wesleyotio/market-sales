@@ -19,6 +19,7 @@ class FindProductUseCaseTest extends TestCase
     #[DataProvider('valueProvider')]
     public function test_invalid_id_for_product($id, $expect) 
     {
+         /** @var ProductRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject */
         $productRepository = $this->createMock(ProductRepositoryInterface::class);
         
         $findProductUseCase = new FindProductUseCase($productRepository);
@@ -36,6 +37,7 @@ class FindProductUseCaseTest extends TestCase
 
     public function test_fail_find_product_for_id_non_existent() 
     {
+         /** @var ProductRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject */
         $productRepository = $this->createMock(ProductRepositoryInterface::class);
         
         $findProductUseCase = new FindProductUseCase($productRepository);
@@ -55,6 +57,7 @@ class FindProductUseCaseTest extends TestCase
 
     public function test_find_product_for_id() 
     {
+        /** @var ProductRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject */
         $productRepository = $this->createMock(ProductRepositoryInterface::class);
         
         $findProductUseCase = new FindProductUseCase($productRepository);

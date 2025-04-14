@@ -17,6 +17,7 @@ class DeleteProductUseCaseTest extends TestCase
     #[DataProvider('valueProvider')]
     public function test_delete_product_for_id($id, $expect) 
     {
+        /** @var ProductRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject */
         $productRepository = $this->createMock(ProductRepositoryInterface::class);
         
         $createProductUseCase = new DeleteProductUseCase($productRepository);
