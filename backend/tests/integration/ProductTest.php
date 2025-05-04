@@ -49,6 +49,7 @@ class ProductTest extends TestCase
                 'http_errors' => false
             ]
         );
+        
 
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
@@ -62,15 +63,13 @@ class ProductTest extends TestCase
     public function test_get_product_by_invalid_id()
     {
 
-
-
         $response = $this->client->request('GET', '/product/0', ['http_errors' => false]);
 
         $body = (string) $response->getBody()->getContents();
         $dataResponse = json_decode($body, true);
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
-        $this->assertEquals("ID is invalid for values less or equals zero", $dataResponse['error']);
+        $this->assertEquals("Id provider is invalid", $dataResponse['error']);
     }
 
     public function test_create_products()

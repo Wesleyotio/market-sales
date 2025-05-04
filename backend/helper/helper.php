@@ -180,7 +180,7 @@ function formatArgsForId(array $args): int
 
     $id = intval($args["id"]);
 
-    if(is_int($id ) == false || $id < 0) {
+    if(is_int($id ) == false || $id <= 0) {
         throw new \InvalidArgumentException("Id provider is invalid");
     }
 

@@ -11,18 +11,14 @@ use App\Application\UseCases\DeleteProductUseCase;
 use App\Application\UseCases\FindAllProductUseCase;
 use App\Application\UseCases\FindProductUseCase;
 use App\Application\UseCases\UpdateProductUseCase;
+use App\Domain\Entities\Product;
 use App\Infrastructure\Exceptions\DataBaseException;
 use App\Infrastructure\Web\Controllers\ProductController;
-use InvalidArgumentException;
-use PDOException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Symfony\Component\HttpFoundation\Response as ResponseCode;
-
 use PHPUnit\Framework\TestCase;
-use Throwable;
-use TypeError;
 
 class ProductControllerTest extends TestCase
 {
@@ -229,7 +225,119 @@ class ProductControllerTest extends TestCase
         $this->assertEquals($code, $responseTest->getStatusCode());
     }
 
-   
+    public function test_search_product_by_id_way_api()
+    {
+        $args = [
+            "id" => 3
+        ];
+
+        $arrayResponse = [
+            'id' => 3,
+            'code' => 12,
+            'type_product_id' => 22,
+            'name' => "nameTest",
+            'value' => 138.25,
+            'created_at' => \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', "1999-05-02 22:20:25" ),
+            'updated_at' => \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', "2021-05-02 22:20:25" )
+        ];
+
+        $product = new Product(
+            $arrayResponse['id'],
+            $arrayResponse['code'],
+            $arrayResponse['type_product_id'],
+            $arrayResponse['name'],
+            $arrayResponse['value'],
+            $arrayResponse['created_at'],
+            $arrayResponse['updated_at'],
+            
+        );
+
+        $productDTO = ProductDto::fromEntity($product);
+        
+        $encodedEntity = json_encode(
+            $productDTO->toArray(),
+            JSON_THROW_ON_ERROR
+        );
+
+        $streamMock = $this->createMock(\Psr\Http\Message\StreamInterface::class);
+        $streamMock->expects($this->once())
+            ->method('write')
+            ->with($encodedEntity);
+
+        $this->response->expects($this->any())
+            ->method('getHeaders')
+            ->willReturn( ['Content-Type' => ['application/json']]);
+
+        $this->response->expects($this->any())
+            ->method('getBody')
+            ->willReturn($streamMock);
+
+        $this->response->expects($this->any())
+            ->method('getStatusCode')
+            ->willReturn(ResponseCode::HTTP_OK);
+            
+        $this->response->expects($this->any())
+            ->method('withHeader')
+            ->willReturnSelf();
+
+        $this->response->expects($this->any())
+            ->method('withStatus')
+            ->willReturnSelf();
+
+        $this->findProductUseCase->expects($this->once())
+            ->method('action')
+            ->with($args['id'])
+            ->willReturn($productDTO);
+
+        $responseTest = $this->productController->findById($this->request, $this->response, $args);
+
+        $this->assertEquals(ResponseCode::HTTP_OK, $responseTest->getStatusCode());
+    }
+
+    #[DataProvider('failFindProviderForId')]
+    public function test_fail_search_product_by_id_way_api($args, $code, $message)
+    {
+        
+        $encodedEntity = json_encode(
+            ["error" => $message],
+            JSON_THROW_ON_ERROR
+        );
+
+        $streamMock = $this->createMock(\Psr\Http\Message\StreamInterface::class);
+        $streamMock->expects($this->once())
+            ->method('write')
+            ->with($encodedEntity);
+
+        $this->response->expects($this->any())
+            ->method('getHeaders')
+            ->willReturn( ['Content-Type' => ['application/json']]);
+
+        $this->response->expects($this->any())
+            ->method('getBody')
+            ->willReturn($streamMock);
+
+        $this->response->expects($this->any())
+            ->method('getStatusCode')
+            ->willReturn($code);
+            
+        $this->response->expects($this->any())
+            ->method('withHeader')
+            ->willReturnSelf();
+
+        $this->response->expects($this->any())
+            ->method('withStatus')
+            ->willReturnSelf();
+
+        $this->findProductUseCase->expects($this->never())
+            ->method('action');
+            
+
+        $responseTest = $this->productController->findById($this->request, $this->response, $args);
+
+        $this->assertEquals($code, $responseTest->getStatusCode());
+    }
+
+
     public static function failCreateProvider(): array
     {
 
@@ -337,4 +445,22 @@ class ProductControllerTest extends TestCase
             'when_throw_pdoException' => ['productData' => $arrayDataPdoException , 'code' => ResponseCode::HTTP_INTERNAL_SERVER_ERROR,  'exception' => DataBaseException::class ,'message' => "SQLSTATE[22003]: Numeric value out of range: 7 ERROR:"]
         ];
     }
+
+    public static function failFindProviderForId(): array
+    {
+       
+        $argsWithoutId = [
+            'code' => 22
+        ];
+
+        $argsLessZeroId = [
+            'id' => -6
+        ];
+
+        return [ 
+            'when_args_is_without_id' => [ 'args' => $argsWithoutId, 'code' => ResponseCode::HTTP_BAD_REQUEST, 'message' => "Expected key of value id"],
+            'when_args_is_less_zero_id' => [ 'args' => $argsLessZeroId, 'code' => ResponseCode::HTTP_BAD_REQUEST, 'message' => "Id provider is invalid"]
+        ];
+    }
+   
 }
