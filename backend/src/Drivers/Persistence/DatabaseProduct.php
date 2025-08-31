@@ -89,10 +89,10 @@ class DatabaseProduct implements DatabaseProductInterface
     }
 
     /**
-     * @param int $product_id
+     * @param int $productId
      * @return array<mixed>|null
      */
-    public function selectById(int $product_id): ?array
+    public function selectById(int $productId): ?array
     {
         $this->pdo = $this->connect();
 
@@ -102,7 +102,7 @@ class DatabaseProduct implements DatabaseProductInterface
                         WHERE id = :id AND deleted_at IS NULL";
 
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':id', $product_id, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $productId, PDO::PARAM_INT);
             $stmt->execute();
 
             $product = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -115,7 +115,7 @@ class DatabaseProduct implements DatabaseProductInterface
     }
 
     /**
-     * 
+     *
      * @return array<mixed>
      */
     public function selectAll(): array

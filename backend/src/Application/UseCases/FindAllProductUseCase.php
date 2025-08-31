@@ -19,7 +19,7 @@ class FindAllProductUseCase
     }
 
     /**
-     * @return array<mixed> 
+     * @return array<mixed>
      *
     */
     public function action(): array
@@ -28,7 +28,6 @@ class FindAllProductUseCase
         $products = $this->productRepository->findAll();
 
         return $this->transformProducts($products);
-        
     }
 
     /**
@@ -41,12 +40,12 @@ class FindAllProductUseCase
      *     created_at: string,
      *     updated_at: string
      * }> $products
-     * 
+     *
      * @return array<mixed>
      */
-    private function transformProducts( array $products): array
+    private function transformProducts(array $products): array
     {
-        
+
         return array_map(function (array $productData) {
             $product = new ProductDto(
                 $productData['code'],

@@ -22,4 +22,7 @@ phpcs:
 phpcbf:
 	${DOCKER_RUN} bash -c "cd backend && composer phpcbf"
 
+mess:
+	${DOCKER_RUN} bash -c "cd backend && composer mess"
+
 

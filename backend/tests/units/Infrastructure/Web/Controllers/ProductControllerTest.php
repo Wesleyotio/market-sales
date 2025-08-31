@@ -337,6 +337,49 @@ class ProductControllerTest extends TestCase
         $this->assertEquals($code, $responseTest->getStatusCode());
     }
 
+    #[DataProvider('failFindProviderForId')]
+    public function test_fail_search_product_by_id_in_use_case_way_api($args, $code, $message)
+    {
+        
+        $encodedEntity = json_encode(
+            ["error" => $message],
+            JSON_THROW_ON_ERROR
+        );
+
+        $streamMock = $this->createMock(\Psr\Http\Message\StreamInterface::class);
+        $streamMock->expects($this->once())
+            ->method('write')
+            ->with($encodedEntity);
+
+        $this->response->expects($this->any())
+            ->method('getHeaders')
+            ->willReturn( ['Content-Type' => ['application/json']]);
+
+        $this->response->expects($this->any())
+            ->method('getBody')
+            ->willReturn($streamMock);
+
+        $this->response->expects($this->any())
+            ->method('getStatusCode')
+            ->willReturn($code);
+            
+        $this->response->expects($this->any())
+            ->method('withHeader')
+            ->willReturnSelf();
+
+        $this->response->expects($this->any())
+            ->method('withStatus')
+            ->willReturnSelf();
+
+        $this->findProductUseCase->expects($this->never())
+            ->method('action');
+            
+
+        $responseTest = $this->productController->findById($this->request, $this->response, $args);
+
+        $this->assertEquals($code, $responseTest->getStatusCode());
+    }
+
 
     public static function failCreateProvider(): array
     {
@@ -439,7 +482,6 @@ class ProductControllerTest extends TestCase
             
         ];
 
-     
         return [
             'when_code_duplicate' => ['productData' => $arrayDataCodeDuplicate , 'code' => ResponseCode::HTTP_BAD_REQUEST , 'exception' => ProductException::class, 'message' => "Code has already been registered, use another code"],
             'when_throw_pdoException' => ['productData' => $arrayDataPdoException , 'code' => ResponseCode::HTTP_INTERNAL_SERVER_ERROR,  'exception' => DataBaseException::class ,'message' => "SQLSTATE[22003]: Numeric value out of range: 7 ERROR:"]

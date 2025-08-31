@@ -49,10 +49,10 @@ readonly class ProductDto
             throw new TypeError("O parâmetro value: {$productData['value']} não pode ser negativo");
         }
         return new self(
-             $productData['code'],
-             $productData['type_product_id'],
-             $productData['name'],
-             $productData['value']
+            $productData['code'],
+            $productData['type_product_id'],
+            $productData['name'],
+            $productData['value']
         );
     }
 

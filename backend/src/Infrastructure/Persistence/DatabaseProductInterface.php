@@ -5,7 +5,7 @@ namespace App\Infrastructure\Persistence;
 interface DatabaseProductInterface
 {
     public function create(string $productData): void;
-    
+
     /**
      * @return array<int,array{
      *      id: int,
@@ -13,8 +13,8 @@ interface DatabaseProductInterface
      *      type_product_id: int,
      *      name: string,
      *      value: float,
-     *      created_at: string,    
-     *      updated_at: string    
+     *      created_at: string,
+     *      updated_at: string
      * }>
      */
     public function selectAll(): array;
@@ -33,8 +33,8 @@ interface DatabaseProductInterface
      *      type_product_id: int,
      *      name: string,
      *      value: float,
-     *      created_at: string,    
-     *      updated_at: string    
+     *      created_at: string,
+     *      updated_at: string
      * }|null
      */
     public function selectById(int $id): ?array;
@@ -51,5 +51,4 @@ interface DatabaseProductInterface
      * @return int|null
      */
     public function delete(int $id): ?int;
-   
 }

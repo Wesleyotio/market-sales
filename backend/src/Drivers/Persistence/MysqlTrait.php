@@ -2,6 +2,7 @@
 
 namespace App\Drivers\Persistence;
 
+use App\Infrastructure\Exceptions\DataBaseException;
 use PDO;
 use Dotenv\Dotenv;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +33,7 @@ trait PostgresTrait
 
             return $this->pdo;
         } catch (\PDOException $e) {
-            throw new \App\Infrastructure\Exceptions\DataBaseException("Connection failed: " . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR, $e);
+            throw new DataBaseException("Connection failed: " . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR, $e);
         }
     }
 

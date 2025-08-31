@@ -19,7 +19,7 @@ class ProductUpdateDto
         private ?DateTimeImmutable $updatedAt = null,
     ) {
     }
-    
+
 
     /**
      * @param array{
@@ -41,21 +41,29 @@ class ProductUpdateDto
         foreach ($productData as $key => $value) {
             switch ($key) {
                 case 'code':
-                    if ( (is_int($value) == false) || ($value <= 0)) throw new TypeError("O parâmetro code: {$value} precisa ser do tipo Inteiro e ser maior que zero");
+                    if ((is_int($value) == false) || ($value <= 0)) {
+                        throw new TypeError("O parâmetro code: {$value} precisa ser do tipo Inteiro e ser maior que zero");
+                    }
                     break;
-                    
+
                 case 'type_product_id':
-                    if ( (is_int($value) == false) || ($value <= 0)) throw new TypeError("O parâmetro type_product_id: {$value} precisa ser do tipo Inteiro e maior que zero");
+                    if ((is_int($value) == false) || ($value <= 0)) {
+                        throw new TypeError("O parâmetro type_product_id: {$value} precisa ser do tipo Inteiro e maior que zero");
+                    }
                     break;
-                    
+
                 case 'name':
-                    if ( (is_string($value) == false) || empty($value) ) throw new TypeError("O parâmetro name: {$value} precisa ser do tipo string e não vazia");
+                    if ((is_string($value) == false) || empty($value)) {
+                        throw new TypeError("O parâmetro name: {$value} precisa ser do tipo string e não vazia");
+                    }
                     break;
-                    
+
                 case 'value':
-                    if ( (is_float($value) == false) || ($value <= 0) ) throw new TypeError("O parâmetro value: {$value} precisa ser do tipo float e ser maior que zero");
+                    if ((is_float($value) == false) || ($value <= 0)) {
+                        throw new TypeError("O parâmetro value: {$value} precisa ser do tipo float e ser maior que zero");
+                    }
                     break;
-            
+
                 default:
                     break;
             }
