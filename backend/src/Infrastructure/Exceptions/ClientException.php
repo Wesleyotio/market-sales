@@ -9,13 +9,13 @@ use Exception;
 
 class ClientException extends Exception
 {
-    /**
-    * @param string $message
-    * @param int $code
-    * @param \Throwable|null $previous
-    */
-    public function __construct($message = "Requisição do cliente inválida.", $code = Response::HTTP_BAD_REQUEST, \Throwable $previous = null)
-    {
-        parent::__construct($message, $code, $previous);
-    }
+	/**
+	* @param string $message
+	* @param int $code
+	* @param \Throwable|null $previous
+	*/
+	public function __construct($message = "Requisição do cliente inválida.", $code = Response::HTTP_BAD_REQUEST, \Throwable $previous = null)
+	{
+		parent::__construct($message, $code, $previous);
+	}
 }

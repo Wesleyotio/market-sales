@@ -11,71 +11,71 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProductRepository implements ProductRepositoryInterface
 {
-    private DatabaseProductInterface $databaseProductInterface;
+	private DatabaseProductInterface $databaseProductInterface;
 
-    public function __construct(DatabaseProductInterface $databaseProductInterface)
-    {
-        $this->databaseProductInterface = $databaseProductInterface;
-    }
+	public function __construct(DatabaseProductInterface $databaseProductInterface)
+	{
+		$this->databaseProductInterface = $databaseProductInterface;
+	}
 
-    public function create(ProductDto $product): void
-    {
+	public function create(ProductDto $product): void
+	{
 
-        $arrayProduct = [
-            'code' => $product->getCode(),
-            'type_product_id' => $product->getTypeProductId(),
-            'name' => $product->getName(),
-            'value' => $product->getValue(),
-        ];
+		$arrayProduct = [
+			'code' => $product->getCode(),
+			'type_product_id' => $product->getTypeProductId(),
+			'name' => $product->getName(),
+			'value' => $product->getValue(),
+		];
 
-        try {
-            $jsonProduct = json_encode($arrayProduct, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $th) {
-            throw new RuntimeException('Failure to convert to json object', Response::HTTP_INTERNAL_SERVER_ERROR, $th);
-        }
+		try {
+			$jsonProduct = json_encode($arrayProduct, JSON_THROW_ON_ERROR);
+		} catch (\JsonException $th) {
+			throw new RuntimeException('Failure to convert to json object', Response::HTTP_INTERNAL_SERVER_ERROR, $th);
+		}
 
-        $this->databaseProductInterface->create($jsonProduct);
-    }
+		$this->databaseProductInterface->create($jsonProduct);
+	}
 
-    public function findCode(int $code): bool
-    {
+	public function findCode(int $code): bool
+	{
 
-        return $this->databaseProductInterface->selectByCode($code);
-    }
+		return $this->databaseProductInterface->selectByCode($code);
+	}
 
-    public function findById(int $id): ?Product
-    {
+	public function findById(int $id): ?Product
+	{
 
 
-        $productData = $this->databaseProductInterface->selectById($id);
+		$productData = $this->databaseProductInterface->selectById($id);
 
-        if (is_null($productData)) {
-            return null;
-        }
+		if (is_null($productData)) {
+			return null;
+		}
 
-        return new Product(
-            $productData['id'],
-            $productData['code'],
-            $productData['type_product_id'],
-            $productData['name'],
-            $productData['value'],
-            formatDate($productData['created_at']),
-            formatDate($productData['updated_at'])
-        );
-    }
+		return new Product(
+			$productData['id'],
+			$productData['code'],
+			$productData['type_product_id'],
+			$productData['name'],
+			$productData['value'],
+			formatDate($productData['created_at']),
+			formatDate($productData['updated_at'])
+		);
+	}
 
-    public function findAll(): array
-    {
-        return $this->databaseProductInterface->selectAll();
-    }
+	public function findAll(): array
+	{
+		return $this->databaseProductInterface->selectAll();
+	}
 
-    public function update(int $id, array $array): ?int
-    {
-        return $this->databaseProductInterface->update($id, $array);
-    }
+	public function update(int $id, array $array): ?int
+	{
+		return $this->databaseProductInterface->update($id, $array);
+	}
 
-    public function delete(int $id): ?int
-    {
-        return $this->databaseProductInterface->delete($id);
-    }
+	public function delete(int $id): ?int
+	{
+		return $this->databaseProductInterface->delete($id);
+	}
 }

@@ -6,15 +6,15 @@ use App\Domain\Repositories\ProductRepositoryInterface;
 
 class DeleteProductUseCase
 {
-    private ProductRepositoryInterface $productRepository;
+	private ProductRepositoryInterface $productRepository;
 
-    public function __construct(ProductRepositoryInterface $productRepository)
-    {
-        $this->productRepository = $productRepository;
-    }
+	public function __construct(ProductRepositoryInterface $productRepository)
+	{
+		$this->productRepository = $productRepository;
+	}
 
-    public function action(int $id): ?int
-    {
-        return $this->productRepository->delete($id);
-    }
+	public function action(int $id): ?int
+	{
+		return $this->productRepository->delete($id);
+	}
 }
