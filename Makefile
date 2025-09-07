@@ -10,6 +10,9 @@ test:
 test-coverage:
 	${DOCKER_RUN} bash -c "cd backend && composer test-coverage"
 
+test-integration:
+	${DOCKER_RUN} bash -c "cd backend && composer test-integration"
+
 test-report:
 	${DOCKER_RUN} bash -c "cd backend && composer test-coverage-html"
 
@@ -24,5 +27,8 @@ phpcbf:
 
 mess:
 	${DOCKER_RUN} bash -c "cd backend && composer mess"
+
+show-coverage:
+	xdg-open backend/storage/coverage/index.html
 
 

@@ -36,7 +36,8 @@
         "guzzlehttp/guzzle": "^7.9"
     },
     "scripts": {
-        "test": "phpunit",
+        "test": "phpunit --testsuite units",
+        "test-integration": "phpunit --testsuite integration",
         "test-coverage-html": "phpunit --coverage-html storage/coverage/",
         "test-coverage": "phpunit --coverage-text",
         "phpstan": "phpstan analyse -c phpstan.neon",
