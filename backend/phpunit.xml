@@ -3,7 +3,11 @@
           bootstrap="vendor/autoload.php"
           failOnRisky="true" failOnWarning="true"
           colors="true" 
-          cacheDirectory="./storage/logs/phpunit.cache">
+          cacheDirectory="./storage/logs/phpunit.cache"
+          displayDetailsOnTestsThatTriggerDeprecations="true"
+          displayDetailsOnTestsThatTriggerErrors="true"
+          displayDetailsOnTestsThatTriggerWarnings="true"
+          beStrictAboutOutputDuringTests="true">
   <testsuites>
     <testsuite name="units">
       <directory suffix="Test.php">./tests/units</directory>
@@ -14,6 +18,11 @@
   </testsuites>
   <php>
     <env name="APP_ENV" value="testing"/>
+    <env name="DISPLAY_ERROR_DETAILS" value="true"/>
+    <env name="LOG_ERRORS" value="true"/>
+    <env name="LOG_ERROR_DETAILS" value="true"/>
+    <env name="TEST_DB_CONNECTION" value="sqlite"/>
+    <env name="TEST_DB_MEMORY" value=":memory:"/>
   </php>
   <logging>
     <junit outputFile="./storage/logs/junit.xml"/>

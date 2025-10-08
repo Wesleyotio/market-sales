@@ -20,6 +20,26 @@
                 "max_data": 10000,
                 "show_hidden": 1
             }
+        },
+        {
+            "name": "Launch currently open script",
+            "type": "php",
+            "request": "launch",
+            "hostname": "127.0.0.1",
+            "program": "${workspaceFolder}/backend/vendor/bin/phpunit",
+            "args": [
+                "--configuration",
+                "${workspaceFolder}/backend/phpunit.xml",
+                "--colors=always",
+                "--testdox",
+                "${file}"
+            ],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "XDEBUG_MODE": "debug"
+            },
+            "port": 9006,
+            "ignore": ["**/vendor/**/*.php"]
         }
     ]
 }
