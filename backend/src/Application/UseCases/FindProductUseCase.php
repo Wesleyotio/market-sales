@@ -8,25 +8,25 @@ use App\Infrastructure\Exceptions\ClientException;
 
 class FindProductUseCase
 {
-	private ProductRepositoryInterface $productRepository;
+    private ProductRepositoryInterface $productRepository;
 
-	public function __construct(ProductRepositoryInterface $productRepository)
-	{
-		$this->productRepository = $productRepository;
-	}
+    public function __construct(ProductRepositoryInterface $productRepository)
+    {
+        $this->productRepository = $productRepository;
+    }
 
-	public function action(int $id): ProductDto
-	{
+    public function action(int $id): ProductDto
+    {
 
-		if ($id <= 0) {
-			throw new ClientException("ID is invalid for values less or equals zero");
-		}
+        if ($id <= 0) {
+            throw new ClientException("ID is invalid for values less or equals zero");
+        }
 
-		$product = $this->productRepository->findById($id);
+        $product = $this->productRepository->findById($id);
 
-		if (is_null($product)) {
-			throw new ClientException("there is no matching product for the ID");
-		}
-		return ProductDto::fromEntity($product);
-	}
+        if (is_null($product)) {
+            throw new ClientException("there is no matching product for the ID");
+        }
+        return ProductDto::fromEntity($product);
+    }
 }

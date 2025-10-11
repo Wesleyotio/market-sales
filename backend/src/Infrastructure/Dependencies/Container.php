@@ -16,33 +16,33 @@ use Psr\Container\ContainerInterface;
 
 return [
 
-	EntityManagerLoader::class => function (ContainerInterface $c) {
-		$doctrineConfig = require __DIR__ . '/../../../config/doctrine.php';
-		return $doctrineConfig();
-	},
+    EntityManagerLoader::class => function (ContainerInterface $c) {
+        $doctrineConfig = require __DIR__ . '/../../../config/doctrine.php';
+        return $doctrineConfig();
+    },
 
 
-	DatabaseProductInterface::class => \DI\create(DatabaseProduct::class),
-	ProductRepositoryInterface::class => \DI\create(ProductRepository::class)
-		->constructor(\DI\get(DatabaseProductInterface::class)),
-	// ProductService::class => \DI\create()
-	//     ->constructor(\DI\get(ProductRepositoryInterface::class)),
-	CreateProductUseCase::class => \DI\create()
-		->constructor(\DI\get(ProductRepositoryInterface::class)),
-	FindProductUseCase::class => \DI\create()
-		->constructor(\DI\get(ProductRepositoryInterface::class)),
-	FindAllProductUseCase::class => \DI\create()
-		->constructor(\DI\get(ProductRepositoryInterface::class)),
-	UpdateProductUseCase::class => \DI\create()
-		->constructor(\DI\get(ProductRepositoryInterface::class)),
-	DeleteProductUseCase::class => \DI\create()
-		->constructor(\DI\get(ProductRepositoryInterface::class)),
-	ProductController::class => \DI\create()
-		->constructor(
-			\DI\get(CreateProductUseCase::class),
-			\DI\get(FindProductUseCase::class),
-			\DI\get(FindAllProductUseCase::class),
-			\DI\get(UpdateProductUseCase::class),
-			\DI\get(DeleteProductUseCase::class),
-		),
+    DatabaseProductInterface::class => \DI\create(DatabaseProduct::class),
+    ProductRepositoryInterface::class => \DI\create(ProductRepository::class)
+        ->constructor(\DI\get(DatabaseProductInterface::class)),
+    // ProductService::class => \DI\create()
+    //     ->constructor(\DI\get(ProductRepositoryInterface::class)),
+    CreateProductUseCase::class => \DI\create()
+        ->constructor(\DI\get(ProductRepositoryInterface::class)),
+    FindProductUseCase::class => \DI\create()
+        ->constructor(\DI\get(ProductRepositoryInterface::class)),
+    FindAllProductUseCase::class => \DI\create()
+        ->constructor(\DI\get(ProductRepositoryInterface::class)),
+    UpdateProductUseCase::class => \DI\create()
+        ->constructor(\DI\get(ProductRepositoryInterface::class)),
+    DeleteProductUseCase::class => \DI\create()
+        ->constructor(\DI\get(ProductRepositoryInterface::class)),
+    ProductController::class => \DI\create()
+        ->constructor(
+            \DI\get(CreateProductUseCase::class),
+            \DI\get(FindProductUseCase::class),
+            \DI\get(FindAllProductUseCase::class),
+            \DI\get(UpdateProductUseCase::class),
+            \DI\get(DeleteProductUseCase::class),
+        ),
 ];
