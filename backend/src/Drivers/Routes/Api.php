@@ -3,6 +3,8 @@
 namespace App\Drivers\Routes;
 
 use App\Infrastructure\Web\Controllers\ProductController;
+use App\Infrastructure\Web\Controllers\TaxController;
+use App\Infrastructure\Web\Controllers\TypeProductController;
 use Slim\App;
 
 return static function (App $app) {
@@ -13,4 +15,18 @@ return static function (App $app) {
     $app->put('/product/{id}', [ProductController::class, 'updateAll']);
     $app->patch('/product/{id}', [ProductController::class, 'update']);
     $app->delete('/product/{id}', [ProductController::class, 'delete']);
+
+    $app->post('/types', [TypeProductController::class, 'create']);
+    // $app->get('/product/type{id}', [TypeProductController::class, 'findById']);
+    $app->get('/type', [TypeProductController::class, 'findAll']);
+    // $app->put('/product/type/{id}', [TypeProductController::class, 'updateAll']);
+    // $app->patch('/product/type/{id}', [TypeProductController::class, 'update']);
+    // $app->delete('/product/type/{id}', [TypeProductController::class, 'delete']);
+
+    $app->post('/taxes', [TaxController::class, 'create']);
+    $app->get('/tax/{id}', [TaxController::class, 'findById']);
+    $app->get('/tax', [TaxController::class, 'findAll']);
+    $app->put('/tax/{id}', [TaxController::class, 'updateAll']);
+    $app->patch('/tax/{id}', [TaxController::class, 'update']);
+    $app->delete('/tax/{id}', [TaxController::class, 'delete']);
 };
