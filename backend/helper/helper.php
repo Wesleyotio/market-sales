@@ -76,7 +76,7 @@ function validateKeysContainedInArray(array $subArrayKeys, array $superArrayKeys
 }
 
 /**
- * converte o body da requisição em array{}
+ * converte o body da requisição de Product em array{}
  *
  * @param Request $request 
  * @return array{
@@ -107,11 +107,65 @@ function formatRequestInProductData(Request $request): array
         'value' => (float)$requestData['value']
     ];
     return $validateArray;
+}
 
+
+/**
+ * converte o body da requisição de Type Product
+ *
+ * @param Request $request 
+ * @return string $name 
+
+ */
+function formatRequestInTypeProductData(Request $request): string
+{
+    $requestData = $request->getParsedBody();
+
+    $arrayKeys = ['name'];
+    
+    if (!is_array($requestData)) {
+        throw new \InvalidArgumentException('Expected array, got ' . gettype($requestData));
+    }
+
+    if (! validateArrayKeys($arrayKeys, $requestData)) {
+        throw new \TypeError("Type Product has missing fields");
+    }
+
+    return $requestData['name'];
 }
 
 /**
- * converte o body da requisição em array{}
+ * converte o body da requisição de Tax em array{}
+ *
+ * @param Request $request 
+ * @return array{
+ *      type_product_id: int,
+ *      value: float
+ * }
+ */
+function formatRequestInTaxData(Request $request): array
+{
+    $requestData = $request->getParsedBody();
+
+    $arrayKeys = ['type_product_id', 'value'];
+    
+    if (!is_array($requestData)) {
+        throw new \InvalidArgumentException('Expected array, got ' . gettype($requestData));
+    }
+
+    if (! validateArrayKeys($arrayKeys, $requestData)) {
+        throw new \TypeError("Tax has missing fields");
+    }
+
+    $validateArray = [
+        'type_product_id' => (int)$requestData['type_product_id'],
+        'value' => (float)$requestData['value']
+    ];
+    return $validateArray;
+}
+
+/**
+ * converte o body da requisição de update de Product em array{}
  *
  * @param Request $request 
  * @return array{
@@ -158,7 +212,47 @@ function formatRequestInProductDataUpdate(Request $request): array
         }
     }
     return $requestData;
+}
 
+/**
+ * converte o body da requisição de update de Tax em array{}
+ *
+ * @param Request $request 
+ * @return array{
+ *      type_product_id?: int,
+ *      value?: float
+ * }
+ */
+function formatRequestInTaxDataUpdate(Request $request): array
+{
+    $requestData = $request->getParsedBody();
+
+    $arrayKeys = ['type_product_id', 'value'];
+    
+    if (!is_array($requestData)) {
+        throw new \InvalidArgumentException('Expected array, got ' . gettype($requestData));
+    }
+
+    if (!validateKeysContainedInArray(array_keys($requestData), $arrayKeys)) {
+        throw new \App\Application\Exceptions\TaxException("unknown fields are being passed for tax update");
+    }
+
+    foreach ($requestData as $key => $value) {
+        switch ($key) {
+                
+            case 'type_product_id':
+                if ( (is_int($value) == false) || ($value <= 0)) throw new  \InvalidArgumentException("Expected  for type_product_id: {$value} type int higher than zero");
+                break;
+                
+            case 'value':
+                if ( (is_float($value) == false) || ($value <= 0) ) throw new  \InvalidArgumentException("Expected  for value: {$value} type float higher than zero");
+                break;
+        
+            default:
+                break;
+        }
+    }
+    return $requestData;
 }
 
 /**
