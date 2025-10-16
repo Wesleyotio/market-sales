@@ -17,11 +17,10 @@ return static function (App $app) {
     $app->delete('/product/{id}', [ProductController::class, 'delete']);
 
     $app->post('/types', [TypeProductController::class, 'create']);
-    // $app->get('/product/type{id}', [TypeProductController::class, 'findById']);
+    $app->get('/type/{id}', [TypeProductController::class, 'findById']);
     $app->get('/type', [TypeProductController::class, 'findAll']);
-    // $app->put('/product/type/{id}', [TypeProductController::class, 'updateAll']);
-    // $app->patch('/product/type/{id}', [TypeProductController::class, 'update']);
-    // $app->delete('/product/type/{id}', [TypeProductController::class, 'delete']);
+    $app->patch('/type/{id}', [TypeProductController::class, 'update']);
+    $app->delete('/type/{id}', [TypeProductController::class, 'delete']);
 
     $app->post('/taxes', [TaxController::class, 'create']);
     $app->get('/tax/{id}', [TaxController::class, 'findById']);

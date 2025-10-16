@@ -20,10 +20,10 @@ class TypeProductController
 {
     public function __construct(
         private CreateTypeProductUseCase $createTypeProductUseCase,
-        // private FindTypeProductUseCase $findTypeProductUseCase,
-        private FindAllTypeProductUseCase $findAllTypeProductUseCase
-        // private UpdateTypeProductUseCase $updateTypeProductUseCase
-        // private DeleteTypeProductUseCase $deleteTypeProductUseCase,
+        private FindTypeProductUseCase $findTypeProductUseCase,
+        private FindAllTypeProductUseCase $findAllTypeProductUseCase,
+        private UpdateTypeProductUseCase $updateTypeProductUseCase,
+        private DeleteTypeProductUseCase $deleteTypeProductUseCase,
     ) {
     }
 
@@ -71,53 +71,53 @@ class TypeProductController
         return $response->withStatus(ResponseCode::HTTP_CREATED);
     }
 
-    // /**
-    // * @param Response $response
-    // * @param array{id: int} $args
-    // * @return Response
-    // */
-    // public function findById(Request $request, Response $response, array $args): Response
-    // {
-    //     $response = $response->withHeader('Content-Type', 'application/json');
+    /**
+    * @param Response $response
+    * @param array{id: int} $args
+    * @return Response
+    */
+    public function findById(Request $request, Response $response, array $args): Response
+    {
+        $response = $response->withHeader('Content-Type', 'application/json');
 
-    //     try {
-    //         $taxId = formatArgsForId($args);
+        try {
+            $typeProductId = formatArgsForId($args);
 
-    //         $taxEntity = $this->findTaxUseCase->action($taxId);
-    //     } catch (\InvalidArgumentException | ClientException $ex) {
-    //         $messageException = json_encode(
-    //             ["error" => $ex->getMessage()],
-    //             JSON_THROW_ON_ERROR
-    //         );
+            $typeProductEntity = $this->findTypeProductUseCase->action($typeProductId);
+        } catch (\InvalidArgumentException | ClientException $ex) {
+            $messageException = json_encode(
+                ["error" => $ex->getMessage()],
+                JSON_THROW_ON_ERROR
+            );
 
-    //         $response->getBody()->write($messageException);
-    //         return $response->withStatus(ResponseCode::HTTP_BAD_REQUEST);
-    //     } catch (\App\Infrastructure\Exceptions\DataBaseException $th) {
-    //         $messageException = json_encode(
-    //             ["error" => $th->getMessage()],
-    //             JSON_THROW_ON_ERROR
-    //         );
+            $response->getBody()->write($messageException);
+            return $response->withStatus(ResponseCode::HTTP_BAD_REQUEST);
+        } catch (\App\Infrastructure\Exceptions\DataBaseException $th) {
+            $messageException = json_encode(
+                ["error" => $th->getMessage()],
+                JSON_THROW_ON_ERROR
+            );
 
-    //         $response->getBody()->write($messageException);
-    //         return $response->withStatus($th->getCode());
-    //     } catch (\Throwable $th) {
-    //         $messageException = json_encode(
-    //             ["error" => $th->getMessage()],
-    //             JSON_THROW_ON_ERROR
-    //         );
+            $response->getBody()->write($messageException);
+            return $response->withStatus($th->getCode());
+        } catch (\Throwable $th) {
+            $messageException = json_encode(
+                ["error" => $th->getMessage()],
+                JSON_THROW_ON_ERROR
+            );
 
-    //         $response->getBody()->write($messageException);
-    //         return $response->withStatus(ResponseCode::HTTP_INTERNAL_SERVER_ERROR);
-    //     }
+            $response->getBody()->write($messageException);
+            return $response->withStatus(ResponseCode::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
-    //     $encodedEntity = json_encode(
-    //         $taxEntity->toArray(),
-    //         JSON_THROW_ON_ERROR
-    //     );
+        $encodedEntity = json_encode(
+            $typeProductEntity->toArray(),
+            JSON_THROW_ON_ERROR
+        );
 
-    //     $response->getBody()->write($encodedEntity);
-    //     return $response->withStatus(ResponseCode::HTTP_OK);
-    // }
+        $response->getBody()->write($encodedEntity);
+        return $response->withStatus(ResponseCode::HTTP_OK);
+    }
 
     /**
     * @param Response $response
@@ -148,154 +148,107 @@ class TypeProductController
         return $response->withStatus(ResponseCode::HTTP_OK);
     }
 
-    // /**
-    // * @param Request $request
-    // * @param Response $response
-    // * @param array{id: int} $args
-    // * @return Response
-    // */
-    // public function update(Request $request, Response $response, array $args): Response
-    // {
-    //     $response = $response->withHeader('Content-Type', 'application/json');
+    /**
+    * @param Request $request
+    * @param Response $response
+    * @param array{id: int} $args
+    * @return Response
+    */
+    public function update(Request $request, Response $response, array $args): Response
+    {
+        $response = $response->withHeader('Content-Type', 'application/json');
 
-    //     try {
-    //         $taxId = formatArgsForId($args);
+        try {
+            $typeProductId = formatArgsForId($args);
 
-    //         $taxData = formatRequestInTaxDataUpdate($request);
+            $typeProductName = formatRequestInTypeProductData($request);
 
-    //         $taxUpdateDto = TaxUpdateDto::fromRequest($taxData);
+            if ($this->updateTypeProductUseCase->action($typeProductId, $typeProductName) == null) {
+                $messageException = json_encode(
+                    ["error" => "o matching rows found for update"],
+                    JSON_THROW_ON_ERROR
+                );
 
-    //         if ($this->updateTaxUseCase->action($taxId, $taxUpdateDto->toArray()) == null) {
-    //             $messageException = json_encode(
-    //                 ["error" => "o matching rows found for update"],
-    //                 JSON_THROW_ON_ERROR
-    //             );
+                $response->getBody()->write($messageException);
+                return $response->withStatus(ResponseCode::HTTP_NOT_FOUND);
+            };
+        } catch (\InvalidArgumentException | ClientException | TypeProductException | \TypeError  $th) {
+            $messageException = json_encode(
+                ["error" => $th->getMessage()],
+                JSON_THROW_ON_ERROR
+            );
 
-    //             $response->getBody()->write($messageException);
-    //             return $response->withStatus(ResponseCode::HTTP_NOT_FOUND);
-    //         };
-    //     } catch (ClientException | TaxException | \TypeError  $th) {
-    //         $messageException = json_encode(
-    //             ["error" => $th->getMessage()],
-    //             JSON_THROW_ON_ERROR
-    //         );
+            $response->getBody()->write($messageException);
+            return $response->withStatus(ResponseCode::HTTP_BAD_REQUEST);
+        } catch (DataBaseException | \Throwable $th) {
+            $messageException = json_encode(
+                ["error" => $th->getMessage()],
+                JSON_THROW_ON_ERROR
+            );
 
-    //         $response->getBody()->write($messageException);
-    //         return $response->withStatus(ResponseCode::HTTP_BAD_REQUEST);
-    //     } catch (DataBaseException | \Throwable $th) {
-    //         $messageException = json_encode(
-    //             ["error" => $th->getMessage()],
-    //             JSON_THROW_ON_ERROR
-    //         );
+            $response->getBody()->write($messageException);
+            return $response->withStatus(ResponseCode::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
-    //         $response->getBody()->write($messageException);
-    //         return $response->withStatus(ResponseCode::HTTP_INTERNAL_SERVER_ERROR);
-    //     }
+        return $response->withStatus(ResponseCode::HTTP_NO_CONTENT);
+    }
 
-    //     return $response->withStatus(ResponseCode::HTTP_NO_CONTENT);
-    // }
 
-    // /**
-    // * @param Request $request
-    // * @param Response $response
-    // * @param array{id: int} $args
-    // * @return Response
-    // */
-    // public function updateALL(Request $request, Response $response, array $args): Response
-    // {
-    //     $response = $response->withHeader('Content-Type', 'application/json');
+    /**
+    * @param Response $response
+    * @param array{id: int} $args
+    * @return Response
+    */
+    public function delete(Request $request, Response $response, array $args): Response
+    {
+        $response = $response->withHeader('Content-Type', 'application/json');
 
-    //     try {
-    //         $taxId = formatArgsForId($args);
+        try {
+            $taxId = formatArgsForId($args);
 
-    //         $taxData = formatRequestInTaxDataUpdate($request);
+            if ($this->deleteTypeProductUseCase->action($taxId) == null) {
+                $messageException = json_encode(
+                    ["error" => "id does not match any item"],
+                    JSON_THROW_ON_ERROR
+                );
 
-    //         $taxUpdateDto = TaxUpdateDto::fromRequest($taxData);
+                $response->getBody()->write($messageException);
+                return $response->withStatus(ResponseCode::HTTP_BAD_REQUEST);
+            };
+        } catch (\InvalidArgumentException | ClientException $ex) {
+            $messageException = json_encode(
+                ["error" => $ex->getMessage()],
+                JSON_THROW_ON_ERROR
+            );
 
-    //         if ($this->updateTaxUseCase->action($taxId, $taxUpdateDto->toArray()) == null) {
-    //             $messageException = json_encode(
-    //                 ["error" => "o matching rows found for update"],
-    //                 JSON_THROW_ON_ERROR
-    //             );
+            $response->getBody()->write($messageException);
+            return $response->withStatus(ResponseCode::HTTP_BAD_REQUEST);
+        } catch (\App\Infrastructure\Exceptions\DataBaseException $th) {
+            $messageException = json_encode(
+                [
+                    'error' => $th->getMessage()
+                ],
+                JSON_THROW_ON_ERROR
+            );
 
-    //             $response->getBody()->write($messageException);
-    //             return $response->withStatus(ResponseCode::HTTP_NOT_FOUND);
-    //         };
-    //     } catch (\InvalidArgumentException | ClientException | TaxException | \TypeError $ex) {
-    //         $messageException = json_encode(
-    //             ["error" => $ex->getMessage()],
-    //             JSON_THROW_ON_ERROR
-    //         );
+                $response->getBody()->write($messageException);
+            return $response->withStatus($th->getCode());
+        } catch (\Throwable $th) {
+            $messageException = json_encode(
+                ["error" => $th->getMessage()],
+                JSON_THROW_ON_ERROR
+            );
 
-    //         $response->getBody()->write($messageException);
-    //         return $response->withStatus(ResponseCode::HTTP_BAD_REQUEST);
-    //     } catch (DataBaseException | \Throwable $th) {
-    //         $response->getBody()->write(
-    //             json_encode(
-    //                 [ "error" => $th->getMessage()],
-    //                 JSON_THROW_ON_ERROR
-    //             )
-    //         );
-    //         return $response->withStatus(ResponseCode::HTTP_INTERNAL_SERVER_ERROR);
-    //     }
-    //     return $response->withStatus(ResponseCode::HTTP_NO_CONTENT);
-    // }
+            $response->getBody()->write($messageException);
+            return $response->withStatus(ResponseCode::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
-    // /**
-    // * @param Response $response
-    // * @param array{id: int} $args
-    // * @return Response
-    // */
-    // public function delete(Request $request, Response $response, array $args): Response
-    // {
-    //     $response = $response->withHeader('Content-Type', 'application/json');
+        $encodedEntity = json_encode(
+            [ "message" => "Type deleted successfully!"],
+            JSON_THROW_ON_ERROR
+        );
 
-    //     try {
-    //         $taxId = formatArgsForId($args);
-
-    //         if ($this->deleteTaxUseCase->action($taxId) == null) {
-    //             $messageException = json_encode(
-    //                 ["error" => "id does not match any item"],
-    //                 JSON_THROW_ON_ERROR
-    //             );
-
-    //             $response->getBody()->write($messageException);
-    //             return $response->withStatus(ResponseCode::HTTP_BAD_REQUEST);
-    //         };
-    //     } catch (\App\Infrastructure\Exceptions\ClientException $ex) {
-    //         $messageException = json_encode(
-    //             ["error" => $ex->getMessage()],
-    //             JSON_THROW_ON_ERROR
-    //         );
-
-    //         $response->getBody()->write($messageException);
-    //         return $response->withStatus(ResponseCode::HTTP_BAD_REQUEST);
-    //     } catch (\App\Infrastructure\Exceptions\DataBaseException $th) {
-    //         $messageException = json_encode(
-    //             [
-    //                 'error' => $th->getMessage()
-    //             ],
-    //             JSON_THROW_ON_ERROR
-    //         );
-
-    //             $response->getBody()->write($messageException);
-    //         return $response->withStatus($th->getCode());
-    //     } catch (\Throwable $th) {
-    //         $messageException = json_encode(
-    //             ["error" => $th->getMessage()],
-    //             JSON_THROW_ON_ERROR
-    //         );
-
-    //         $response->getBody()->write($messageException);
-    //         return $response->withStatus(ResponseCode::HTTP_INTERNAL_SERVER_ERROR);
-    //     }
-
-    //     $encodedEntity = json_encode(
-    //         [ "message" => "Tax deleted successfully!"],
-    //         JSON_THROW_ON_ERROR
-    //     );
-
-    //     $response->getBody()->write($encodedEntity);
-    //     return $response->withStatus(ResponseCode::HTTP_OK);
-    // }
+        $response->getBody()->write($encodedEntity);
+        return $response->withStatus(ResponseCode::HTTP_OK);
+    }
 }

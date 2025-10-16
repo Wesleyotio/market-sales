@@ -9,13 +9,16 @@ use App\Application\UseCases\CreateTaxUseCase;
 use App\Application\UseCases\CreateTypeProductUseCase;
 use App\Application\UseCases\DeleteProductUseCase;
 use App\Application\UseCases\DeleteTaxUseCase;
+use App\Application\UseCases\DeleteTypeProductUseCase;
 use App\Application\UseCases\FindAllProductUseCase;
 use App\Application\UseCases\FindAllTaxUseCase;
 use App\Application\UseCases\FindAllTypeProductUseCase;
 use App\Application\UseCases\FindProductUseCase;
 use App\Application\UseCases\FindTaxUseCase;
+use App\Application\UseCases\FindTypeProductUseCase;
 use App\Application\UseCases\UpdateProductUseCase;
 use App\Application\UseCases\UpdateTaxUseCase;
+use App\Application\UseCases\UpdateTypeProductUseCase;
 use App\Domain\Repositories\TaxRepositoryInterface;
 use App\Domain\Repositories\TypeProductRepositoryInterface;
 use App\Drivers\Persistence\DatabaseTax;
@@ -64,21 +67,21 @@ return [
         ->constructor(\DI\get(DatabaseTypeProductInterface::class)),
     CreateTypeProductUseCase::class => \DI\create()
         ->constructor(\DI\get(TypeProductRepositoryInterface::class)),
-    // FindTypeProductUseCase::class => \DI\create()
-    //     ->constructor(\DI\get(TypeProductRepositoryInterface::class)),
+    FindTypeProductUseCase::class => \DI\create()
+        ->constructor(\DI\get(TypeProductRepositoryInterface::class)),
     FindAllTypeProductUseCase::class => \DI\create()
         ->constructor(\DI\get(TypeProductRepositoryInterface::class)),
-    // UpdateTypeProductUseCase::class => \DI\create()
-    //     ->constructor(\DI\get(TypeProductRepositoryInterface::class)),
-    // DeleteTypeProductUseCase::class => \DI\create()
-    //     ->constructor(\DI\get(TypeProductRepositoryInterface::class)),
+    UpdateTypeProductUseCase::class => \DI\create()
+        ->constructor(\DI\get(TypeProductRepositoryInterface::class)),
+    DeleteTypeProductUseCase::class => \DI\create()
+        ->constructor(\DI\get(TypeProductRepositoryInterface::class)),
     TypeProductController::class => \DI\create()
         ->constructor(
             \DI\get(CreateTypeProductUseCase::class),
-            // \DI\get(FindTypeProductUseCase::class),
-            \DI\get(FindAllTypeProductUseCase::class)
-            // \DI\get(UpdateTypeProductUseCase::class),
-            // \DI\get(DeleteTypeProductUseCase::class),
+            \DI\get(FindTypeProductUseCase::class),
+            \DI\get(FindAllTypeProductUseCase::class),
+            \DI\get(UpdateTypeProductUseCase::class),
+            \DI\get(DeleteTypeProductUseCase::class),
         ),
 
         DatabaseTaxInterface::class => \DI\create(DatabaseTax::class),
