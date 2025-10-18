@@ -37,16 +37,7 @@ class TaxRepository implements TaxRepositoryInterface
     public function findById(int $id): ?Tax
     {
         $taxData = $this->databaseTaxInterface->selectById($id);
-
-        if (is_null($taxData)) {
-            return null;
-        }
-
-        return new Tax(
-            $taxData['id'],
-            $taxData['type_product_id'],
-            $taxData['value']  
-        );
+        return $this->validateTax($taxData);
     }
 
     public function validateByTypeProductId(int $typeProductId): bool
@@ -54,9 +45,10 @@ class TaxRepository implements TaxRepositoryInterface
         return $this->databaseTaxInterface->selectByTypeProductId($typeProductId);
     }
 
-    public function findByTypeProductId(int $typeProductId): ?array
+    public function findByTypeProductId(int $typeProductId): ?Tax
     {
-        return $this->databaseTaxInterface->findByTypeProductId($typeProductId);
+        $taxData = $this->databaseTaxInterface->findByTypeProductId($typeProductId);
+        return $this->validateTax($taxData);
     }
 
     public function findAll(): array
@@ -72,5 +64,17 @@ class TaxRepository implements TaxRepositoryInterface
     public function delete(int $id): ?int
     {
         return $this->databaseTaxInterface->delete($id);
+    }
+
+    private function validateTax(array $taxData): ?Tax 
+    {
+        if (is_null($taxData)) {
+            return null;
+        }
+        return new Tax(
+            $taxData['id'],
+            $taxData['type_product_id'],
+            $taxData['value']  
+        );
     }
 }

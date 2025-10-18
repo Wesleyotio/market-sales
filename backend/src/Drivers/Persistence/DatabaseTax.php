@@ -83,7 +83,7 @@ class DatabaseTax implements DatabaseTaxInterface
         $this->pdo = $this->connect();
 
         try {
-            $sql = "SELECT id, value 
+            $sql = "SELECT id, type_product_id, value 
                         FROM taxes 
                         WHERE type_product_id = :type_product_id  AND deleted_at IS NULL";
 
@@ -92,7 +92,7 @@ class DatabaseTax implements DatabaseTaxInterface
             $stmt->execute();
 
             $tax = $stmt->fetch(PDO::FETCH_ASSOC);
-            
+
             return is_array($tax) ? $tax : null;
         } catch (\PDOException $e) {
             throw new DataBaseException($e->getMessage(), previous: $e);

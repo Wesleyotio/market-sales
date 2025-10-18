@@ -26,6 +26,7 @@ interface DatabaseTaxInterface
      * @param int $id
      * @return array{
      *      id: int,
+     *      type_product_id: int,
      *      value: float
      * }|null
      */
