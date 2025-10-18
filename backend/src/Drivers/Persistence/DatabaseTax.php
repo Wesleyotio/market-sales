@@ -78,6 +78,26 @@ class DatabaseTax implements DatabaseTaxInterface
         }
     }
 
+    public function findByTypeProductId(int $typeProductId): ?array
+    {
+        $this->pdo = $this->connect();
+
+        try {
+            $sql = "SELECT id, value 
+                        FROM taxes 
+                        WHERE type_product_id = :type_product_id  AND deleted_at IS NULL";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':type_product_id', $typeProductId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $tax = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            return is_array($tax) ? $tax : null;
+        } catch (\PDOException $e) {
+            throw new DataBaseException($e->getMessage(), previous: $e);
+        }
+    }
     /**
      * @param int $taxId
      * @return array<mixed>|null

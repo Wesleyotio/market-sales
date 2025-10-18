@@ -21,6 +21,16 @@ interface DatabaseTaxInterface
      */
     public function selectByTypeProductId(int $typeProductId): bool;
 
+
+    /**
+     * @param int $id
+     * @return array{
+     *      id: int,
+     *      value: float
+     * }|null
+     */
+    public function findByTypeProductId(int $typeProductId): ?array;
+
     /**
      * @param int $id
      * @return array{

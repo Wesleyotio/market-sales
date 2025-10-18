@@ -18,7 +18,7 @@ class CreateTaxUseCase
     public function action(TaxDto $taxDto): void
     {
 
-        if ($this->taxRepository->findByTypeProductId($taxDto->getTypeProductId())) {
+        if ($this->taxRepository->validateByTypeProductId($taxDto->getTypeProductId())) {
             throw new TaxException("Tax has already been registered, use another type of product");
         }
 

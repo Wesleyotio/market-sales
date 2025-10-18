@@ -49,9 +49,14 @@ class TaxRepository implements TaxRepositoryInterface
         );
     }
 
-    public function findByTypeProductId(int $typeProductId): bool
+    public function validateByTypeProductId(int $typeProductId): bool
     {
         return $this->databaseTaxInterface->selectByTypeProductId($typeProductId);
+    }
+
+    public function findByTypeProductId(int $typeProductId): ?array
+    {
+        return $this->databaseTaxInterface->findByTypeProductId($typeProductId);
     }
 
     public function findAll(): array

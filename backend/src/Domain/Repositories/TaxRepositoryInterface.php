@@ -9,7 +9,15 @@ interface TaxRepositoryInterface
 {
 	public function create(TaxDto $tax): void;
 	public function findById(int $id): ?Tax;
-	public function findByTypeProductId(int $typeProductId): bool;
+	public function validateByTypeProductId(int $typeProductId): bool;
+
+     /**
+     * @return array<int, array{
+     *     value: float,
+     *     id: int
+     * }> $taxes
+     */
+     public function findByTypeProductId(int $typeProductId): ?array;
 
 	/**
      * @return array<int, array{
