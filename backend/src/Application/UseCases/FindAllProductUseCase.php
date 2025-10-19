@@ -35,7 +35,7 @@ class FindAllProductUseCase
      *     code: int,
      *     type_product_id: int,
      *     name: string,
-     *     value: float,
+     *     value: string,
      *     id: int,
      *     created_at: string,
      *     updated_at: string
@@ -51,7 +51,7 @@ class FindAllProductUseCase
                 $productData['code'],
                 $productData['type_product_id'],
                 $productData['name'],
-                (float) $productData['value'],
+                $productData['value'],
                 $productData['id'],
                 formatDate($productData['created_at']),
                 formatDate($productData['updated_at'])

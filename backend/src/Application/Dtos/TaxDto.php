@@ -12,13 +12,13 @@ readonly class TaxDto
 {
     public function __construct(
         private int $typeProductId,
-        private float $value,
+        private string $value,
         private ?int $id = null
     ) {
     }
 
     /**
-    * @param array{'type_product_id': int,'value': float} $taxData
+    * @param array{'type_product_id': int,'value': string} $taxData
     */
     public static function fromRequest(array $taxData): self
     {
@@ -34,7 +34,7 @@ readonly class TaxDto
             );
         }
 
-        if ($taxData['value'] <= 0) {
+        if (convertValueInStringForFloat($taxData['value']) <= 0) {
             throw new TypeError("O parâmetro value: {$taxData['value']} não pode ser menor ou igual a zero");
         }
         return new self(
@@ -77,7 +77,7 @@ readonly class TaxDto
         return $this->typeProductId;
     }
 
-    public function getValue(): float
+    public function getValue(): string
     {
         return $this->value;
     }

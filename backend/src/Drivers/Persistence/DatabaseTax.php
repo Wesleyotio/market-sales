@@ -17,7 +17,7 @@ class DatabaseTax implements DatabaseTaxInterface
     * @param string $taxData JSON string:
     * {
     *     "type_product_id": int,
-    *     "value": float
+    *     "value": string
     * }
     * @throws DataBaseException
     * @throws \JsonException
@@ -31,7 +31,7 @@ class DatabaseTax implements DatabaseTaxInterface
 
             /** @var array{
              *     type_product_id: int,
-             *     value: float
+             *     value: string
              * } $arrayDecoded
              */
             $arrayDecoded = json_decode($taxData, true, 512, JSON_THROW_ON_ERROR);
@@ -78,6 +78,14 @@ class DatabaseTax implements DatabaseTaxInterface
         }
     }
 
+    /** 
+    * @param int $typeProductId 
+    * @return array{
+    *   id: int,    
+    *   type_product_id: int,
+    *   value: string
+    * } $tax
+    */
     public function findByTypeProductId(int $typeProductId): ?array
     {
         $this->pdo = $this->connect();

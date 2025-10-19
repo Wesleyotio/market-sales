@@ -11,7 +11,7 @@ readonly class Product
         private int $code,
         private int $typeProductId,
         private string $name,
-        private float $value,
+        private string $value,
         private DateTimeImmutable $createdAt,
         private DateTimeImmutable $updatedAt,
         private ?DateTimeImmutable $deletedAt = null
@@ -38,7 +38,7 @@ readonly class Product
         return $this->name;
     }
 
-    public function getValue(): float
+    public function getValue(): string
     {
         return $this->value;
     }

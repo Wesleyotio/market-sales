@@ -15,7 +15,7 @@ readonly class ProductDto
         private int $code,
         private int $typeProductId,
         private string $name,
-        private float $value,
+        private string $value,
         private ?int $id = null,
         private ?DateTimeImmutable $createdAt = null,
         private ?DateTimeImmutable $updatedAt = null,
@@ -23,7 +23,7 @@ readonly class ProductDto
     }
 
     /**
-    * @param array{'code': int, 'type_product_id': int, 'name': string, 'value': float} $productData
+    * @param array{'code': int, 'type_product_id': int, 'name': string, 'value': string} $productData
     */
     public static function fromRequest(array $productData): self
     {
@@ -38,14 +38,16 @@ readonly class ProductDto
         }
 
         if ($productData['type_product_id'] <= 0) {
-            throw new TypeError("O parâmetro type_product_id: {$productData['type_product_id']} precisa ser maior que zero");
+            throw new TypeError(
+                "O parâmetro type_product_id: {$productData['type_product_id']} precisa ser maior que zero"
+            );
         }
 
         if (empty($productData['name'])) {
             throw new TypeError("O parâmetro name: {$productData['name']} não pode ser vazio");
         }
 
-        if ($productData['value'] < 0) {
+        if (convertValueInStringForFloat($productData['value']) < 0) {
             throw new TypeError("O parâmetro value: {$productData['value']} não pode ser negativo");
         }
         return new self(
@@ -107,7 +109,7 @@ readonly class ProductDto
         return $this->name;
     }
 
-    public function getValue(): float
+    public function getValue(): string
     {
         return $this->value;
     }

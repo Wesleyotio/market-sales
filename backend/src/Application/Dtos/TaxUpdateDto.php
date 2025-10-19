@@ -12,14 +12,14 @@ class TaxUpdateDto
 {
     public function __construct(
         private ?int $typeProductId = null,
-        private ?float $value = null
+        private ?string $value = null
     ) {
     }
 
     /**
      * @param array{
      *   type_product_id?: int,
-     *   value?: float
+     *   value?: string
      * } $taxData
      */
     public static function fromRequest(array $taxData): self
@@ -41,9 +41,9 @@ class TaxUpdateDto
                     break;
 
                 case 'value':
-                    if ((is_float($value) == false) || ($value <= 0)) {
+                    if ((is_string($value) == false) || (convertValueInStringForFloat($value) <= 0)) {
                         throw new TypeError(
-                            "O parâmetro value: {$value} precisa ser do tipo float e ser maior que zero"
+                            "O parâmetro value: {$value} precisa ser do tipo string e ser maior que zero"
                         );
                     }
                     break;
@@ -86,7 +86,7 @@ class TaxUpdateDto
         return $this->typeProductId;
     }
 
-    public function getValue(): ?float
+    public function getValue(): ?string
     {
         return $this->value;
     }

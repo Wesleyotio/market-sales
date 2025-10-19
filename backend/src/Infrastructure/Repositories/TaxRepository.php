@@ -66,6 +66,14 @@ class TaxRepository implements TaxRepositoryInterface
         return $this->databaseTaxInterface->delete($id);
     }
 
+    /**
+     * @param array{
+     *  id: int,
+     *  type_product_id: int,
+     *  value: string
+     * }|null $taxData
+     * @return Tax|null
+     */
     private function validateTax(array $taxData): ?Tax 
     {
         if (is_null($taxData)) {

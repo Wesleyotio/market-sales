@@ -20,7 +20,7 @@ class DatabaseProduct implements DatabaseProductInterface
     *     "code": int,
     *     "type_product_id": int,
     *     "name": string,
-    *     "value": float
+    *     "value": string
     * }
     * @throws DataBaseException
     * @throws \JsonException
@@ -36,7 +36,7 @@ class DatabaseProduct implements DatabaseProductInterface
              *     code: int,
              *     type_product_id: int,
              *     name: string,
-             *     value: float
+             *     value: string
              * } $arrayDecoded
              */
             $arrayDecoded = json_decode($productData, true, 512, JSON_THROW_ON_ERROR);

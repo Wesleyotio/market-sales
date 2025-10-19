@@ -30,7 +30,7 @@ class FindAllTaxUseCase
     /**
      * @param array<int, array{
      *     type_product_id: int,
-     *     value: float,
+     *     value: string,
      *     id: int,
      * }> $taxes
      *
@@ -42,7 +42,7 @@ class FindAllTaxUseCase
         return array_map(function (array $taxData) {
             $tax = new TaxDto(
                 $taxData['type_product_id'],
-                (float) $taxData['value'],
+                $taxData['value'],
                 $taxData['id']
             );
             return $tax->toArray();

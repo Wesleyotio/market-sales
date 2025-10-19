@@ -12,7 +12,7 @@ interface DatabaseProductInterface
      *      code: int,
      *      type_product_id: int,
      *      name: string,
-     *      value: float,
+     *      value: string,
      *      created_at: string,
      *      updated_at: string
      * }>
@@ -32,7 +32,7 @@ interface DatabaseProductInterface
      *      code: int,
      *      type_product_id: int,
      *      name: string,
-     *      value: float,
+     *      value: string,
      *      created_at: string,
      *      updated_at: string
      * }|null

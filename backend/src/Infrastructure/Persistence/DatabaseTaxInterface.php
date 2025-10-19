@@ -23,11 +23,11 @@ interface DatabaseTaxInterface
 
 
     /**
-     * @param int $id
+     * @param int $typeProductId
      * @return array{
      *      id: int,
      *      type_product_id: int,
-     *      value: float
+     *      value: string
      * }|null
      */
     public function findByTypeProductId(int $typeProductId): ?array;
@@ -37,7 +37,7 @@ interface DatabaseTaxInterface
      * @return array{
      *      id: int,
      *      type_product_id: int,
-     *      value: float
+     *      value: string
      * }|null
      */
     public function selectById(int $id): ?array;

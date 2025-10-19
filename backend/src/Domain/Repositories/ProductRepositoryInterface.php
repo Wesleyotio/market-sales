@@ -16,7 +16,7 @@ interface ProductRepositoryInterface
      *     code: int,
      *     type_product_id: int,
      *     name: string,
-     *     value: float,
+     *     value: string,
      *     id: int,
      *     created_at: string,
      *     updated_at: string

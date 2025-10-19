@@ -15,7 +15,7 @@ class ProductUpdateDto
         private ?int $code = null,
         private ?int $typeProductId = null,
         private ?string $name = null,
-        private ?float $value = null,
+        private ?string $value = null,
         private ?DateTimeImmutable $updatedAt = null,
     ) {
     }
@@ -26,7 +26,7 @@ class ProductUpdateDto
      *   code?: int,
      *   type_product_id?: int,
      *   name?: string,
-     *   value?: float
+     *   value?: string
      * } $productData
      */
     public static function fromRequest(array $productData): self
@@ -42,25 +42,33 @@ class ProductUpdateDto
             switch ($key) {
                 case 'code':
                     if ((is_int($value) == false) || ($value <= 0)) {
-                        throw new TypeError("O parâmetro code: {$value} precisa ser do tipo Inteiro e ser maior que zero");
+                        throw new TypeError(
+                            "O parâmetro code: {$value} precisa ser do tipo Inteiro e ser maior que zero"
+                        );
                     }
                     break;
 
                 case 'type_product_id':
                     if ((is_int($value) == false) || ($value <= 0)) {
-                        throw new TypeError("O parâmetro type_product_id: {$value} precisa ser do tipo Inteiro e maior que zero");
+                        throw new TypeError(
+                            "O parâmetro type_product_id: {$value} precisa ser do tipo Inteiro e maior que zero"
+                        );
                     }
                     break;
 
                 case 'name':
                     if ((is_string($value) == false) || empty($value)) {
-                        throw new TypeError("O parâmetro name: {$value} precisa ser do tipo string e não vazia");
+                        throw new TypeError(
+                            "O parâmetro name: {$value} precisa ser do tipo string e não vazia"
+                        );
                     }
                     break;
 
                 case 'value':
-                    if ((is_float($value) == false) || ($value <= 0)) {
-                        throw new TypeError("O parâmetro value: {$value} precisa ser do tipo float e ser maior que zero");
+                    if ((is_string($value) == false) || (convertValueInStringForFloat($value) <= 0)) {
+                        throw new TypeError(
+                            "O parâmetro value: {$value} precisa ser do tipo string e ser maior que zero"
+                        );
                     }
                     break;
 
@@ -120,7 +128,7 @@ class ProductUpdateDto
         return $this->name;
     }
 
-    public function getValue(): ?float
+    public function getValue(): ?string
     {
         return $this->value;
     }

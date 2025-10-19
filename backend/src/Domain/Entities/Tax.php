@@ -7,7 +7,7 @@ readonly class Tax
 	public function __construct(
 		private int $id,
 		private int $typeProductId,
-		private float $value
+		private string $value
 	) {
 	}
 
@@ -21,7 +21,7 @@ readonly class Tax
 		return $this->typeProductId;
 	}
 
-	public function getValue(): float
+	public function getValue(): string
 	{
 		return $this->value;
 	}

@@ -15,7 +15,7 @@ interface TaxRepositoryInterface
 	/**
      * @return array<int, array{
      *     type_product_id: int,
-     *     value: float,
+     *     value: string,
      *     id: int
      * }> $taxes
      *
