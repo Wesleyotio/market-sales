@@ -70,7 +70,7 @@ class FindProductUseCaseTest extends TestCase
                     99,
                     1,
                     'MyproductName',
-                    99.95,
+                    '99.95',
                     \DateTimeImmutable::createFromFormat('Y-m-d H:i:s','2024-12-10 00:11:58'),
                     \DateTimeImmutable::createFromFormat('Y-m-d H:i:s','2024-12-10 00:11:58')
 

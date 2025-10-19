@@ -22,7 +22,6 @@ class ProductTest extends TestCase
 
         $response = $this->client->request('GET', '/product', ['http_errors' => false]);
         
-
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
 
         $body = json_decode($response->getBody()->getContents(), true);
@@ -199,7 +198,7 @@ class ProductTest extends TestCase
             'code'              => 7 + $lastElement['code'],
             'type_product_id'   => 1,
             'name'              => 'produtoPUT',
-            'value'             => 99.95,
+            'value'             => '99.95',
         ];
         $response = $this->client->request(
             'PUT',
@@ -281,10 +280,8 @@ class ProductTest extends TestCase
 
         $id = $lastElement['id'];
         $data = [
-            // 'codess'              => 9999,
-            // 'type_product_id'   => 1,
             'name'              => 'produtoPATCH',
-            'value'             => 199.95,
+            'value'             => '199.95',
         ];
         $response = $this->client->request(
             'PATCH',
@@ -295,12 +292,9 @@ class ProductTest extends TestCase
             ]
         );
 
-        // $body = (string) $response->getBody()->getContents();
-
-        // $dataResponse = json_decode($body, true);
+        
 
         $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
-        // $this->assertEquals("product has missing fields for update complete", $dataResponse['error']);
     }
 
     public function test_failure_update_product_by_id()
@@ -315,9 +309,8 @@ class ProductTest extends TestCase
 
         $data = [
             'codess'              => 9999,
-            // 'type_product_id'   => 1,
             'name'              => 'produtoPATCH',
-            'value'             => 199.95,
+            'value'             => '199.95',
         ];
         $response = $this->client->request(
             'PATCH',

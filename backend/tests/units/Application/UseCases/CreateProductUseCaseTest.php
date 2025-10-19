@@ -26,7 +26,7 @@ class CreateProductUseCaseTest extends TestCase
     {
         $createProductUseCase = new CreateProductUseCase($this->productRepository);
         
-        $productDto = new ProductDto(98,1,'ProductRepeat',100.25);    
+        $productDto = new ProductDto(98,1,'ProductRepeat','100.25');    
         
         $this->productRepository
             ->expects($this->once())
@@ -51,7 +51,7 @@ class CreateProductUseCaseTest extends TestCase
         
         $createProductUseCase = new CreateProductUseCase($this->productRepository);
 
-        $productDto = new ProductDto(98,1,'ProductName',100.25);  
+        $productDto = new ProductDto(98,1,'ProductName','100.25');  
         $this->productRepository
                 ->expects($this->once())
                 ->method('findCode')

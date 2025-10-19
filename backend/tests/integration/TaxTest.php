@@ -111,7 +111,7 @@ class TaxTest extends TestCase
 
         $data = [
             'type_product_id'   => $id,
-            'value'             => 3.99
+            'value'             => '3.99'
         ];
         $response = $this->client->request(
             'POST',
@@ -134,7 +134,7 @@ class TaxTest extends TestCase
     public function test_failure_to_create_taxes()
     {
         $data = [
-            'value' =>  22.75
+            'value' =>  '22.75'
         ];
         $response = $this->client->request(
             'POST',
@@ -165,7 +165,7 @@ class TaxTest extends TestCase
 
         $data = [
             'type_product_id'   => $product_id,
-            'value'             => 22.75,
+            'value'             => '22.75',
         ];
         $response = $this->client->request(
             'POST',
@@ -188,7 +188,7 @@ class TaxTest extends TestCase
     {
         $data = [
             'type_product_id'   => 'produto1',
-            'value'             => 22.75
+            'value'             => '22.75'
         ];
         $response = $this->client->request(
             'POST',
@@ -213,7 +213,7 @@ class TaxTest extends TestCase
         $id = $lastElement['id'];
         $data = [
             'type_product_id'   => $lastElement['type_product_id'], 
-            'value'             => $lastElement['value'] - 1.00
+            'value'             => '1.25'
         ];
         $response = $this->client->request(
             'PUT',
@@ -232,7 +232,7 @@ class TaxTest extends TestCase
         $id = -99;
         $data = [
             'type_product_id'   => 1,
-            'value'             => 9.95
+            'value'             => '9.95'
         ];
         $response = $this->client->request(
             'PUT',
@@ -262,7 +262,7 @@ class TaxTest extends TestCase
         $id = $lastElement['id'];
         $data = [
             'type_product_id'   => $lastElement['type_product_id'],
-            'values'            => 19.95
+            'values'            => '19.95'
         ];
         $response = $this->client->request(
             'PUT',
@@ -291,7 +291,7 @@ class TaxTest extends TestCase
 
         $id = $lastElement['id'];
         $data = [
-            'value'             => 99.95
+            'value'             => '76.83'
         ];
         $response = $this->client->request(
             'PATCH',

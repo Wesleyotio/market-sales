@@ -236,7 +236,7 @@ class ProductControllerTest extends TestCase
             'code' => 12,
             'type_product_id' => 22,
             'name' => "nameTest",
-            'value' => 138.25,
+            'value' => '13825',
             'created_at' => \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', "1999-05-02 22:20:25" ),
             'updated_at' => \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', "2021-05-02 22:20:25" )
         ];
