@@ -68,15 +68,15 @@ class TaxRepository implements TaxRepositoryInterface
 
     /**
      * @param array{
-     *  id: int,
-     *  type_product_id: int,
-     *  value: string
+     *      id: int,
+     *      type_product_id: int,
+     *      value: string
      * }|null $taxData
-     * @return Tax|null
+     * @return null|Tax
      */
-    private function validateTax(array $taxData): ?Tax 
+    private function validateTax(?array $taxData): ?Tax 
     {
-        if (is_null($taxData)) {
+        if (is_null($taxData) == true) {
             return null;
         }
         return new Tax(

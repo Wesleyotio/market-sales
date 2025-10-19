@@ -80,11 +80,7 @@ class DatabaseTax implements DatabaseTaxInterface
 
     /** 
     * @param int $typeProductId 
-    * @return array{
-    *   id: int,    
-    *   type_product_id: int,
-    *   value: string
-    * } $tax
+    * @return array<mixed>|null 
     */
     public function findByTypeProductId(int $typeProductId): ?array
     {

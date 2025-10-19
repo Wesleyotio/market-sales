@@ -8,9 +8,9 @@ interface DatabaseTaxInterface
 
     /**
      * @return array<int,array{
-     *      id: int,
      *      type_product_id: int,
-     *      value: float,
+     *      value: string,
+     *      id: int,
      * }>
      */
     public function selectAll(): array;

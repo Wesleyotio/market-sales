@@ -25,7 +25,7 @@ class FindTaxUseCase
         $tax = $this->taxRepository->findById($id);
 
         if (is_null($tax)) {
-            throw new ClientException("there is no matching product for the ID");
+            throw new ClientException("there is no matching tax for the ID");
         }
         return TaxDto::fromEntity($tax);
     }
