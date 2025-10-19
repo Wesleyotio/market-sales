@@ -31,7 +31,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 # Install extensions
 RUN pecl install xdebug && docker-php-ext-enable xdebug 
 RUN docker-php-ext-install zip exif pcntl pdo_pgsql pgsql pdo_sqlite
-RUN docker-php-ext-install gd
+RUN docker-php-ext-install gd bcmath
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer

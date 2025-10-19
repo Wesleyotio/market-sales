@@ -44,7 +44,7 @@
         "phpcs": "phpcs  --standard=./.phpcs.xml",
         "phpcbf": "phpcbf",
         "mess": "phpmd ./src text phpmd.xml",
-        "migrations": "doctrine-migrations",
+        "migrations": "doctrine-migrations migrate",
         "migrations-generate": "doctrine-migrations generate",
         "migrations-test": "doctrine-migrations migrate --dry-run"
     },
