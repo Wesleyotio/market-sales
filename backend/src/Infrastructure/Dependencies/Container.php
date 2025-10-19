@@ -1,33 +1,43 @@
 <?php
 
+use App\Application\UseCases\CalculateSaleUseCase;
 use App\Infrastructure\Persistence\DatabaseProductInterface;
 use App\Drivers\Persistence\DatabaseProduct;
 use App\Domain\Repositories\ProductRepositoryInterface;
 use App\Infrastructure\Repositories\ProductRepository;
 use App\Application\UseCases\CreateProductUseCase;
+use App\Application\UseCases\CreateSaleUseCase;
 use App\Application\UseCases\CreateTaxUseCase;
 use App\Application\UseCases\CreateTypeProductUseCase;
 use App\Application\UseCases\DeleteProductUseCase;
 use App\Application\UseCases\DeleteTaxUseCase;
 use App\Application\UseCases\DeleteTypeProductUseCase;
 use App\Application\UseCases\FindAllProductUseCase;
+use App\Application\UseCases\FindAllSaleUseCase;
 use App\Application\UseCases\FindAllTaxUseCase;
 use App\Application\UseCases\FindAllTypeProductUseCase;
 use App\Application\UseCases\FindProductUseCase;
+use App\Application\UseCases\FindSaleUseCase;
 use App\Application\UseCases\FindTaxUseCase;
 use App\Application\UseCases\FindTypeProductUseCase;
 use App\Application\UseCases\UpdateProductUseCase;
 use App\Application\UseCases\UpdateTaxUseCase;
 use App\Application\UseCases\UpdateTypeProductUseCase;
+use App\Domain\Entities\Product;
+use App\Domain\Repositories\SaleRepositoryInterface;
 use App\Domain\Repositories\TaxRepositoryInterface;
 use App\Domain\Repositories\TypeProductRepositoryInterface;
+use App\Drivers\Persistence\DatabaseSale;
 use App\Drivers\Persistence\DatabaseTax;
 use App\Drivers\Persistence\DatabaseTypeProduct;
+use App\Infrastructure\Persistence\DatabaseSaleInterface;
 use App\Infrastructure\Persistence\DatabaseTaxInterface;
 use App\Infrastructure\Persistence\DatabaseTypeProductInterface;
+use App\Infrastructure\Repositories\SaleRepository;
 use App\Infrastructure\Repositories\TaxRepository;
 use App\Infrastructure\Repositories\TypeProductRepository;
 use App\Infrastructure\Web\Controllers\ProductController;
+use App\Infrastructure\Web\Controllers\SaleController;
 use App\Infrastructure\Web\Controllers\TaxController;
 use App\Infrastructure\Web\Controllers\TypeProductController;
 use Doctrine\Migrations\Configuration\EntityManager\EntityManagerLoader;
@@ -84,25 +94,47 @@ return [
             \DI\get(DeleteTypeProductUseCase::class),
         ),
 
-        DatabaseTaxInterface::class => \DI\create(DatabaseTax::class),
-        TaxRepositoryInterface::class => \DI\create(TaxRepository::class)
-            ->constructor(\DI\get(DatabaseTaxInterface::class)),
-        CreateTaxUseCase::class => \DI\create()
-            ->constructor(\DI\get(TaxRepositoryInterface::class)),
-        FindTaxUseCase::class => \DI\create()
-            ->constructor(\DI\get(TaxRepositoryInterface::class)),
-        FindAllTaxUseCase::class => \DI\create()
-            ->constructor(\DI\get(TaxRepositoryInterface::class)),
-        UpdateTaxUseCase::class => \DI\create()
-            ->constructor(\DI\get(TaxRepositoryInterface::class)),
-        DeleteTaxUseCase::class => \DI\create()
-            ->constructor(\DI\get(TaxRepositoryInterface::class)),
-        TaxController::class => \DI\create()
-            ->constructor(
-                \DI\get(CreateTaxUseCase::class),
-                \DI\get(FindTaxUseCase::class),
-                \DI\get(FindAllTaxUseCase::class),
-                \DI\get(UpdateTaxUseCase::class),
-                \DI\get(DeleteTaxUseCase::class),
-            ),
+    DatabaseTaxInterface::class => \DI\create(DatabaseTax::class),
+    TaxRepositoryInterface::class => \DI\create(TaxRepository::class)
+        ->constructor(\DI\get(DatabaseTaxInterface::class)),
+    CreateTaxUseCase::class => \DI\create()
+        ->constructor(\DI\get(TaxRepositoryInterface::class)),
+    FindTaxUseCase::class => \DI\create()
+        ->constructor(\DI\get(TaxRepositoryInterface::class)),
+    FindAllTaxUseCase::class => \DI\create()
+        ->constructor(\DI\get(TaxRepositoryInterface::class)),
+    UpdateTaxUseCase::class => \DI\create()
+        ->constructor(\DI\get(TaxRepositoryInterface::class)),
+    DeleteTaxUseCase::class => \DI\create()
+        ->constructor(\DI\get(TaxRepositoryInterface::class)),
+    TaxController::class => \DI\create()
+        ->constructor(
+            \DI\get(CreateTaxUseCase::class),
+            \DI\get(FindTaxUseCase::class),
+            \DI\get(FindAllTaxUseCase::class),
+            \DI\get(UpdateTaxUseCase::class),
+            \DI\get(DeleteTaxUseCase::class),
+        ),
+
+    DatabaseSaleInterface::class => \DI\create(DatabaseSale::class),
+    SaleRepositoryInterface::class => \DI\create(SaleRepository::class)
+        ->constructor(\DI\get(DatabaseSaleInterface::class)),
+    CreateSaleUseCase::class => \DI\create()
+        ->constructor(\DI\get(SaleRepositoryInterface::class)),
+    CalculateSaleUseCase::class => \DI\create()
+        ->constructor(
+            \DI\get(ProductRepositoryInterface::class),
+            \DI\get(TaxRepositoryInterface::class)
+        ),
+    FindAllSaleUseCase::class => \DI\create()
+        ->constructor(\DI\get(SaleRepositoryInterface::class)),
+    FindSaleUseCase::class => \DI\create()
+        ->constructor(\DI\get(SaleRepositoryInterface::class)),
+    SaleController::class => \DI\create()
+        ->constructor(
+            \DI\get(CreateSaleUseCase::class),
+            \DI\get(CalculateSaleUseCase::class),
+            \DI\get(FindAllSaleUseCase::class),
+            \DI\get(FindSaleUseCase::class)
+        ),    
 ];

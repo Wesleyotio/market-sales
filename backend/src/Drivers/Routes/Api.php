@@ -3,6 +3,7 @@
 namespace App\Drivers\Routes;
 
 use App\Infrastructure\Web\Controllers\ProductController;
+use App\Infrastructure\Web\Controllers\SaleController;
 use App\Infrastructure\Web\Controllers\TaxController;
 use App\Infrastructure\Web\Controllers\TypeProductController;
 use Slim\App;
@@ -28,4 +29,10 @@ return static function (App $app) {
     $app->put('/tax/{id}', [TaxController::class, 'updateAll']);
     $app->patch('/tax/{id}', [TaxController::class, 'update']);
     $app->delete('/tax/{id}', [TaxController::class, 'delete']);
+
+
+    $app->post('/sale/order', [SaleController::class, 'order']);
+    $app->post('/sale/pay', [SaleController::class, 'checkout']);
+    $app->get('/sale', [SaleController::class, 'findAll']);
+    $app->get('/sale/{id}', [SaleController::class, 'findById']);
 };

@@ -75,17 +75,24 @@ function validateKeysContainedInArray(array $subArrayKeys, array $superArrayKeys
     return true;
 }
 
+
 /**
- * converte o body da requisição de Product em array{}
+ * converte o valor monetário em string para float 
+ *
+ * @param string $value
+ * @return float 
+ */
+function convertValueInStringForFloat(string $value): float
+{
+    return (float) str_replace(',', '.', str_replace('.', '', $value));
+}
+
+/**
+ * converte o body da requisição em itens  em array{}
  *
  * @param Request $request 
- * @return array{
- *      code: int,
- *      type_product_id: int,
- *      name: string,
- *      value: float
- * }
- */
+ * @return array{'code': int, 'type_product_id': int, 'name': string, 'value': string} $validateArray
+*/
 function formatRequestInProductData(Request $request): array
 {
     $requestData = $request->getParsedBody();
@@ -104,7 +111,7 @@ function formatRequestInProductData(Request $request): array
         'code' => (int)$requestData['code'],
         'type_product_id' => (int)$requestData['type_product_id'],
         'name' => (string)$requestData['name'],
-        'value' => (float)$requestData['value']
+        'value' => (string)$requestData['value']
     ];
     return $validateArray;
 }
@@ -128,7 +135,11 @@ function formatRequestInTypeProductData(Request $request): string
     }
 
     if (! validateArrayKeys($arrayKeys, $requestData)) {
-        throw new \TypeError("Type Product has missing fields");
+        throw new \TypeError("Type of product has missing fields");
+    }
+
+    if (!is_string($requestData['name'])) {
+        throw new \InvalidArgumentException('Expected string, got ' . gettype($requestData['name']));
     }
 
     return $requestData['name'];
@@ -140,7 +151,7 @@ function formatRequestInTypeProductData(Request $request): string
  * @param Request $request 
  * @return array{
  *      type_product_id: int,
- *      value: float
+ *      value: string
  * }
  */
 function formatRequestInTaxData(Request $request): array
@@ -159,8 +170,51 @@ function formatRequestInTaxData(Request $request): array
 
     $validateArray = [
         'type_product_id' => (int)$requestData['type_product_id'],
-        'value' => (float)$requestData['value']
+        'value' => (string)$requestData['value']
     ];
+    return $validateArray;
+}
+
+
+/**
+ * converte o body da requisição de sale itens em array{}
+ *
+ * @param Request $request 
+ * @return array<int,array<string,int|string>> $validateArray
+ */
+function formatRequestInItensSaleData(Request $request): array
+{
+    $requestData = $request->getParsedBody();
+
+    $arrayKeys = ['product_id', 'amount'];
+
+    $validateArray = [];
+    
+    if (!is_array($requestData)) {
+        throw new \InvalidArgumentException('Expected array, got ' . gettype($requestData));
+    }
+
+    foreach($requestData as $salesItem) {
+        if (! validateArrayKeys($arrayKeys, $salesItem)) {
+            throw new \TypeError("Sales Item has missing fields");
+        }
+
+        if((is_int($salesItem['product_id']) == false) || $salesItem['product_id'] <= 0) {
+            throw new \TypeError("Id do produto: {$salesItem['product_id']} deve ser inteiro maior que zero");
+        }
+
+        if((is_int($salesItem['amount']) == false) || $salesItem['amount'] <= 0) {
+            throw new \TypeError("quantidade : {$salesItem['amount']} deve ser inteiro maior que zero");
+        }
+
+        $item = [
+            'product_id'    => (int)$salesItem['product_id'],
+            'amount'        => (string)$salesItem['amount'],
+        ];
+
+        array_push($validateArray, $item);
+    }
+
     return $validateArray;
 }
 
@@ -172,7 +226,7 @@ function formatRequestInTaxData(Request $request): array
  *      code?: int,
  *      type_product_id?: int,
  *      name?: string,
- *      value?: float
+ *      value?: string
  * }
  */
 function formatRequestInProductDataUpdate(Request $request): array
@@ -204,7 +258,9 @@ function formatRequestInProductDataUpdate(Request $request): array
                 break;
                 
             case 'value':
-                if ( (is_float($value) == false) || ($value <= 0) ) throw new  \InvalidArgumentException("Expected  for value: {$value} type float higher than zero");
+                if ( (is_string($value) == false) || (convertValueInStringForFloat($value) <= 0) ){
+                    throw new  \InvalidArgumentException("Expected  for value: {$value} type float higher than zero");
+                }
                 break;
         
             default:
@@ -220,7 +276,7 @@ function formatRequestInProductDataUpdate(Request $request): array
  * @param Request $request 
  * @return array{
  *      type_product_id?: int,
- *      value?: float
+ *      value?: string
  * }
  */
 function formatRequestInTaxDataUpdate(Request $request): array
@@ -245,7 +301,9 @@ function formatRequestInTaxDataUpdate(Request $request): array
                 break;
                 
             case 'value':
-                if ( (is_float($value) == false) || ($value <= 0) ) throw new  \InvalidArgumentException("Expected  for value: {$value} type float higher than zero");
+                if ( (is_string($value) == false) || (convertValueInStringForFloat($value) <= 0) ) {
+                    throw new  \InvalidArgumentException("Expected  for value: {$value} type float higher than zero");
+                } 
                 break;
         
             default:
