@@ -78,9 +78,9 @@ class DatabaseTax implements DatabaseTaxInterface
         }
     }
 
-    /** 
-    * @param int $typeProductId 
-    * @return array<mixed>|null 
+    /**
+    * @param int $typeProductId
+    * @return array<mixed>|null
     */
     public function findByTypeProductId(int $typeProductId): ?array
     {

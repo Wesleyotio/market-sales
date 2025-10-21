@@ -74,7 +74,7 @@ class TaxRepository implements TaxRepositoryInterface
      * }|null $taxData
      * @return null|Tax
      */
-    private function validateTax(?array $taxData): ?Tax 
+    private function validateTax(?array $taxData): ?Tax
     {
         if (is_null($taxData) == true) {
             return null;
@@ -82,7 +82,7 @@ class TaxRepository implements TaxRepositoryInterface
         return new Tax(
             $taxData['id'],
             $taxData['type_product_id'],
-            $taxData['value']  
+            $taxData['value']
         );
     }
 }

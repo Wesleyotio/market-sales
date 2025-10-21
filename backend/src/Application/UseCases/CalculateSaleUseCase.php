@@ -31,8 +31,7 @@ class CalculateSaleUseCase
         $totalPrice = '0';
         $totalTax = '0';
                
-        foreach($salesItens as $salesItem) {
-
+        foreach ($salesItens as $salesItem) {
             $product = $this->productRepository->findById((int)$salesItem['product_id']);
 
             if (is_null($product)) {

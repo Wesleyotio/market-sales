@@ -136,5 +136,5 @@ return [
             \DI\get(CalculateSaleUseCase::class),
             \DI\get(FindAllSaleUseCase::class),
             \DI\get(FindSaleUseCase::class)
-        ),    
+        ),
 ];

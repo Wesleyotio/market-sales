@@ -32,7 +32,6 @@ class SaleController
             $salesItens = formatRequestInItensSaleData($request);
 
             $saleEntity = $this->calculateSaleUseCase->action($salesItens);
-
         } catch (SaleException | \TypeError $th) {
             $response->getBody()->write(
                 json_encode(
@@ -77,7 +76,6 @@ class SaleController
             $saleDto = $this->calculateSaleUseCase->action($salesItens);
 
             $this->createSaleUseCase->action($saleDto, $salesItens);
-
         } catch (SaleException | \TypeError $th) {
             $response->getBody()->write(
                 json_encode(

@@ -24,6 +24,5 @@ class CreateSaleUseCase
         $saleId = $this->saleRepository->create($saleDto);
 
         $this->saleRepository->createSaleItens($saleId, $saleItens);
-
     }
 }

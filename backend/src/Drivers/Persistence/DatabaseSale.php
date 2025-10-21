@@ -55,9 +55,9 @@ class DatabaseSale implements DatabaseSaleInterface
             $stmt->bindParam(':updated_at', $updatedAt);
             
             if (!$stmt->execute()) {
-                throw new \PDOException('Fail to insert register in table sales'); 
+                throw new \PDOException('Fail to insert register in table sales');
             }
-            return (int) $this->pdo->lastInsertId(); 
+            return (int) $this->pdo->lastInsertId();
         } catch (\PDOException $e) {
             throw new DataBaseException($e->getMessage(), previous: $e);
         }
@@ -134,7 +134,6 @@ class DatabaseSale implements DatabaseSaleInterface
         ) 
         VALUES (:sale_id, :product_id, :amount, :created_at, :updated_at)";
         try {
-
             validateJson($saleItensData);
 
             /** @var array<int,array<mixed>> $saleItens
@@ -149,7 +148,7 @@ class DatabaseSale implements DatabaseSaleInterface
                 $stmt->bindParam(':created_at', $createdAt);
                 $stmt->bindParam(':updated_at', $updatedAt);
                 if (!$stmt->execute()) {
-                    throw new \PDOException('Fail to insert register in table sale_itens'); 
+                    throw new \PDOException('Fail to insert register in table sale_itens');
                 }
             }
             return 1;

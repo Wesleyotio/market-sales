@@ -15,7 +15,7 @@ interface TypeProductRepositoryInterface
      *     name: string,
      *     id: int
      * }> $typeProducts
-	 * 
+	 *
      */
 	public function findAll(): array;
 	public function findById(int $id): ?TypeProduct;

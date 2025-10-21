@@ -43,7 +43,7 @@ class TypeProductRepository implements TypeProductRepositoryInterface
 
         return new TypeProduct(
             $typeProductData['id'],
-            $typeProductData['name']  
+            $typeProductData['name']
         );
     }
 

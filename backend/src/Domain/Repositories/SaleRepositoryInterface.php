@@ -13,7 +13,7 @@ interface SaleRepositoryInterface
       * @param int $id
       * @param array<mixed> $saleItensData
       */
-     public function createSaleItens(int $id, array $saleItensData): void;
+	public function createSaleItens(int $id, array $saleItensData): void;
 	public function findById(int $id): ?Sale;
 
 	/**

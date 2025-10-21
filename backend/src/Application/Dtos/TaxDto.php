@@ -71,7 +71,7 @@ readonly class TaxDto
     {
         return $this->id;
     }
-   
+
     public function getTypeProductId(): int
     {
         return $this->typeProductId;

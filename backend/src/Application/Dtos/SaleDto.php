@@ -71,7 +71,7 @@ readonly class SaleDto
     {
         return $this->id;
     }
-   
+
     public function getValueSale(): string
     {
         return $this->valueSale;

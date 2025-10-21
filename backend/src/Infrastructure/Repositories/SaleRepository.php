@@ -55,7 +55,7 @@ class SaleRepository implements SaleRepositoryInterface
         return new Sale(
             $saleData['id'],
             $saleData['value_sale'],
-            $saleData['value_tax']  
+            $saleData['value_tax']
         );
     }
 
@@ -63,5 +63,4 @@ class SaleRepository implements SaleRepositoryInterface
     {
         return $this->databaseSaleInterface->selectAll();
     }
-
 }
