@@ -57,7 +57,7 @@ class FindAllProductUseCaseTest extends TestCase
                         'code'              => 99,
                         'type_product_id'   => 1,
                         'name'              => 'Product1',
-                        'value'             => 99.98,
+                        'value'             => '99.98',
                         'created_at'        => "2024-12-10 00:11:58",
                         'updated_at'        => "2024-12-10 00:11:58"
                     ],
@@ -66,7 +66,7 @@ class FindAllProductUseCaseTest extends TestCase
                         'code'              => 78,
                         'type_product_id'   => 1,
                         'name'              => 'Product2',
-                        'value'             => 97.78,
+                        'value'             => '97.78',
                         'created_at'        => "2024-07-22 19:23:55",
                         'updated_at'        => "2025-01-07 20:24:34",
                     ],

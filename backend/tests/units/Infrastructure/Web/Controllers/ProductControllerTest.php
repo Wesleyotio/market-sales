@@ -75,7 +75,7 @@ class ProductControllerTest extends TestCase
             'code'  => 125,
             'type_product_id' => 2,
             'name'  => 'productTest',
-            'value' => 16.25
+            'value' => '16.25'
         ];
 
         $productDTO = new ProductDto(
