@@ -10,7 +10,7 @@ $container = $containerBuilder->build();
 AppFactory::setContainer($container);
 
 $app = AppFactory::create();
-
+$app->setBasePath('/api');
 $app->addBodyParsingMiddleware();
 
 $app->addErrorMiddleware(true,true,true);
