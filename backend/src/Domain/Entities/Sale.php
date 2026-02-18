@@ -10,7 +10,6 @@ readonly class Sale
         private int $id,
         private string $valueSale,
         private string $valueTax,
-        
     ) {
     }
 

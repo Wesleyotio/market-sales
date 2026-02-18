@@ -15,8 +15,7 @@ class CalculateSaleUseCase
     public function __construct(
         ProductRepositoryInterface $productRepository,
         TaxRepositoryInterface $taxRepository
-    )
-    {
+    ) {
         $this->productRepository = $productRepository;
         $this->taxRepository = $taxRepository;
     }
@@ -30,7 +29,7 @@ class CalculateSaleUseCase
     {
         $totalPrice = '0';
         $totalTax = '0';
-               
+
         foreach ($salesItens as $salesItem) {
             $product = $this->productRepository->findById((int)$salesItem['product_id']);
 
@@ -45,11 +44,11 @@ class CalculateSaleUseCase
             }
 
             $price = bcmul($product->getValue(), (string)$salesItem['amount'], 2);
-                   
+
             $valueTax = bcmul($price, bcdiv($tax->getValue(), '100', 3), 2);
 
             $priceWithTax = bcadd($price, $valueTax, 2);
-            
+
             $totalPrice = bcadd($totalPrice, $priceWithTax, 2);
 
             $totalTax = bcadd($totalTax, $valueTax, 2);

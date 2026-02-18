@@ -2,9 +2,7 @@
 
 namespace App\Application\UseCases;
 
-use App\Application\Exceptions\ProductException;
 use App\Domain\Repositories\ProductRepositoryInterface;
-use TypeError;
 
 class UpdateProductUseCase
 {

@@ -53,7 +53,7 @@ class DatabaseSale implements DatabaseSaleInterface
             $stmt->bindParam(':value_tax', $arrayDecoded['value_tax']);
             $stmt->bindParam(':created_at', $createdAt);
             $stmt->bindParam(':updated_at', $updatedAt);
-            
+
             if (!$stmt->execute()) {
                 throw new \PDOException('Fail to insert register in table sales');
             }

@@ -23,7 +23,6 @@ use App\Application\UseCases\FindTypeProductUseCase;
 use App\Application\UseCases\UpdateProductUseCase;
 use App\Application\UseCases\UpdateTaxUseCase;
 use App\Application\UseCases\UpdateTypeProductUseCase;
-use App\Domain\Entities\Product;
 use App\Domain\Repositories\SaleRepositoryInterface;
 use App\Domain\Repositories\TaxRepositoryInterface;
 use App\Domain\Repositories\TypeProductRepositoryInterface;
@@ -71,7 +70,7 @@ return [
             \DI\get(UpdateProductUseCase::class),
             \DI\get(DeleteProductUseCase::class),
         ),
-        
+
     DatabaseTypeProductInterface::class => \DI\create(DatabaseTypeProduct::class),
     TypeProductRepositoryInterface::class => \DI\create(TypeProductRepository::class)
         ->constructor(\DI\get(DatabaseTypeProductInterface::class)),

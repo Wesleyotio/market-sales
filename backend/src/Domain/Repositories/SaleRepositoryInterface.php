@@ -7,16 +7,16 @@ use App\Domain\Entities\Sale;
 
 interface SaleRepositoryInterface
 {
-	public function create(SaleDTO $sale): int;
+    public function create(SaleDTO $sale): int;
 
      /**
       * @param int $id
       * @param array<mixed> $saleItensData
       */
-	public function createSaleItens(int $id, array $saleItensData): void;
-	public function findById(int $id): ?Sale;
+    public function createSaleItens(int $id, array $saleItensData): void;
+    public function findById(int $id): ?Sale;
 
-	/**
+    /**
      * @return array<int, array{
      *     value_sale: string,
      *     value_tax: string,
@@ -25,5 +25,5 @@ interface SaleRepositoryInterface
      *
      *
      */
-	public function findAll(): array;
+    public function findAll(): array;
 }

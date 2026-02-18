@@ -18,8 +18,7 @@ class DataBaseException extends Exception
         $message = "Failed to connect to the bank",
         $code = Response::HTTP_INTERNAL_SERVER_ERROR,
         \Throwable $previous = null
-        )
-    {
+    ) {
         parent::__construct($message, $code, $previous);
     }
 }

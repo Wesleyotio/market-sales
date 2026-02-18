@@ -30,11 +30,11 @@ trait PostgresTrait
         } catch (\PDOException $e) {
             throw new DataBaseException(
                 "Connection failed: " . $e->getMessage(),
-				Response::HTTP_INTERNAL_SERVER_ERROR,
-				 $e
-			);
-		}
+                Response::HTTP_INTERNAL_SERVER_ERROR,
+                $e
+            );
+        }
 
-		return $this->pdo;
-	}
+        return $this->pdo;
+    }
 }

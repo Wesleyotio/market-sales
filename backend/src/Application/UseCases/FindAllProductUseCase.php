@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace App\Application\UseCases;
 
 use App\Application\Dtos\ProductDto;
-use App\Domain\Entities\Product;
 use App\Domain\Repositories\ProductRepositoryInterface;
-use DateTimeImmutable;
 
 class FindAllProductUseCase
 {
@@ -21,7 +19,7 @@ class FindAllProductUseCase
     /**
      * @return array<mixed>
      *
-    */
+     */
     public function action(): array
     {
 
