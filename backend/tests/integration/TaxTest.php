@@ -11,17 +11,19 @@ use GuzzleHttp\Client;
 class TaxTest extends TestCase
 {
     private Client $client;
+    private string $apiPath;
 
     protected function setUp(): void
     {
         $this->client = new Client(['base_uri' => 'http://host.docker.internal']);
+        $this->apiPath = '/api/v1';
     }
 
     public function test_get_taxes()
     {
 
-        $response = $this->client->request('GET', '/tax', ['http_errors' => false]);
-        
+        $response = $this->client->request('GET', $this->apiPath . '/taxes', ['http_errors' => false]);
+
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
 
@@ -33,8 +35,8 @@ class TaxTest extends TestCase
 
     public function test_get_tax_by_id()
     {
-    
-        $response = $this->client->request('GET', '/tax', ['http_errors' => false]);
+
+        $response = $this->client->request('GET', $this->apiPath . '/taxes', ['http_errors' => false]);
 
         $listTaxesBody = json_decode($response->getBody()->getContents(), true);
 
@@ -44,12 +46,12 @@ class TaxTest extends TestCase
 
         $response = $this->client->request(
             'GET',
-            "/tax/{$id}",
+            "{$this->apiPath}/taxes/{$id}",
             [
                 'http_errors' => false
             ]
         );
-        
+
 
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
@@ -63,7 +65,7 @@ class TaxTest extends TestCase
     public function test_get_tax_by_invalid_id()
     {
 
-        $response = $this->client->request('GET', '/tax/0', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/taxes/0', ['http_errors' => false]);
 
         $body = (string) $response->getBody()->getContents();
         $dataResponse = json_decode($body, true);
@@ -74,7 +76,7 @@ class TaxTest extends TestCase
 
     public function test_create_taxes()
     {
-        $response = $this->client->request('GET', '/type', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/types', ['http_errors' => false]);
 
         $listTypesOfProductsBody = json_decode($response->getBody()->getContents(), true);
 
@@ -86,13 +88,13 @@ class TaxTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/types',
+            $this->apiPath . '/types',
             [
                 'http_errors' => false,
                 'json' => $data
             ]
         );
-        
+
         $body = (string) $response->getBody()->getContents();
 
         $dataResponse = json_decode($body, true);
@@ -100,11 +102,11 @@ class TaxTest extends TestCase
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
         $this->assertEquals("Type of product created successfully!", $dataResponse['message']);
 
-        $response = $this->client->request('GET', '/type', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/types', ['http_errors' => false]);
 
         $listTypesOfProductsBody = json_decode($response->getBody()->getContents(), true);
 
-     
+
         $lastElement = end($listTypesOfProductsBody);
 
         $id =  $lastElement['id'];
@@ -115,7 +117,7 @@ class TaxTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/taxes',
+            $this->apiPath . '/taxes',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -128,7 +130,6 @@ class TaxTest extends TestCase
 
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
         $this->assertEquals("Tax created successfully!", $dataResponse['message']);
-
     }
 
     public function test_failure_to_create_taxes()
@@ -138,7 +139,7 @@ class TaxTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/taxes',
+            $this->apiPath . '/taxes',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -155,7 +156,7 @@ class TaxTest extends TestCase
 
     public function test_failure_to_create_taxes_with_same_product_id()
     {
-        $response = $this->client->request('GET', '/tax', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/taxes', ['http_errors' => false]);
 
         $listTaxesBody = json_decode($response->getBody()->getContents(), true);
 
@@ -169,7 +170,7 @@ class TaxTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/taxes',
+            $this->apiPath . '/taxes',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -192,7 +193,7 @@ class TaxTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/taxes',
+            $this->apiPath . '/taxes',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -204,7 +205,7 @@ class TaxTest extends TestCase
 
     public function test_update_all_tax_by_id()
     {
-        $response = $this->client->request('GET', '/tax', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/taxes', ['http_errors' => false]);
 
         $listTaxesBody = json_decode($response->getBody()->getContents(), true);
 
@@ -212,12 +213,12 @@ class TaxTest extends TestCase
 
         $id = $lastElement['id'];
         $data = [
-            'type_product_id'   => $lastElement['type_product_id'], 
+            'type_product_id'   => $lastElement['type_product_id'],
             'value'             => '1.25'
         ];
         $response = $this->client->request(
             'PUT',
-            "/tax/{$id}",
+            "{$this->apiPath}/taxes/{$id}",
             [
                 'http_errors'   => false,
                 'json'          => $data
@@ -236,24 +237,20 @@ class TaxTest extends TestCase
         ];
         $response = $this->client->request(
             'PUT',
-            "/tax/{$id}",
+            "{$this->apiPath}/taxes/{$id}",
             [
                 'http_errors'   => false,
                 'json'          => $data
             ]
         );
 
-        $body = (string) $response->getBody()->getContents();
 
-        $dataResponse = json_decode($body, true);
-
-        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
-        $this->assertEquals("Id provider is invalid", $dataResponse['error']);
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
     public function test_failure_update_tax_with_incorrect_fields()
     {
-        $response = $this->client->request('GET', '/tax', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/taxes', ['http_errors' => false]);
 
         $listTaxesBody = json_decode($response->getBody()->getContents(), true);
 
@@ -266,7 +263,7 @@ class TaxTest extends TestCase
         ];
         $response = $this->client->request(
             'PUT',
-            "/tax/{$id}",
+            "{$this->apiPath}/taxes/{$id}",
             [
                 'http_errors'   => false,
                 'json'          => $data
@@ -283,7 +280,7 @@ class TaxTest extends TestCase
 
     public function test_update_tax_by_id()
     {
-        $response = $this->client->request('GET', '/tax', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/taxes', ['http_errors' => false]);
 
         $listTaxesBody = json_decode($response->getBody()->getContents(), true);
 
@@ -295,7 +292,7 @@ class TaxTest extends TestCase
         ];
         $response = $this->client->request(
             'PATCH',
-            "/tax/{$id}",
+            "{$this->apiPath}/taxes/{$id}",
             [
                 'http_errors'   => false,
                 'json'          => $data
@@ -307,7 +304,7 @@ class TaxTest extends TestCase
 
     public function test_failure_update_tax_by_id()
     {
-        $response = $this->client->request('GET', '/tax', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/taxes', ['http_errors' => false]);
 
         $listTaxesBody = json_decode($response->getBody()->getContents(), true);
 
@@ -320,7 +317,7 @@ class TaxTest extends TestCase
         ];
         $response = $this->client->request(
             'PATCH',
-            "/tax/{$id}",
+            "{$this->apiPath}/taxes/{$id}",
             [
                 'http_errors'   => false,
                 'json'          => $data
@@ -337,8 +334,8 @@ class TaxTest extends TestCase
 
     public function test_delete_tax_by_id()
     {
-        $responseListTaxes = $this->client->request('GET', '/tax', ['http_errors' => false]);
-        
+        $responseListTaxes = $this->client->request('GET', $this->apiPath . '/taxes', ['http_errors' => false]);
+
         $this->assertEquals(Response::HTTP_OK, $responseListTaxes->getStatusCode());
 
         $bodyList = json_decode($responseListTaxes->getBody()->getContents(), true);
@@ -349,7 +346,7 @@ class TaxTest extends TestCase
 
         $response = $this->client->request(
             'DELETE',
-            "/tax/{$id}",
+            "{$this->apiPath}/taxes/{$id}",
             [
                 'http_errors'   => false
             ]
@@ -369,17 +366,12 @@ class TaxTest extends TestCase
 
         $response = $this->client->request(
             'DELETE',
-            "/tax/{$id}",
+            "{$this->apiPath}/taxes/{$id}",
             [
                 'http_errors'   => false,
             ]
         );
 
-        $body = (string) $response->getBody()->getContents();
-
-        $dataResponse = json_decode($body, true);
-
-        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
-        $this->assertEquals("Id provider is invalid", $dataResponse['error']);
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 }

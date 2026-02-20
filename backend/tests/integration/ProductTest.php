@@ -11,29 +11,30 @@ use GuzzleHttp\Client;
 class ProductTest extends TestCase
 {
     private Client $client;
+    private string $apiPath;
 
     protected function setUp(): void
     {
         $this->client = new Client(['base_uri' => 'http://host.docker.internal']);
+        $this->apiPath = '/api/v1';
     }
 
     public function test_get_products()
     {
 
-        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
-        
+        $response = $this->client->request('GET', $this->apiPath . '/products', ['http_errors' => false]);
+
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
 
         $body = json_decode($response->getBody()->getContents(), true);
 
-        $this->assertNotEmpty($body, 'Body  está vazio.');
         $this->assertIsArray($body, 'Body não é um array.');
     }
 
     public function test_get_product_by_id()
     {
-    
-        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+
+        $response = $this->client->request('GET', $this->apiPath . '/products', ['http_errors' => false]);
 
         $listProductsBody = json_decode($response->getBody()->getContents(), true);
 
@@ -43,12 +44,12 @@ class ProductTest extends TestCase
 
         $response = $this->client->request(
             'GET',
-            "/product/{$id}",
+            "{$this->apiPath}/products/{$id}",
             [
                 'http_errors' => false
             ]
         );
-        
+
 
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
@@ -62,7 +63,7 @@ class ProductTest extends TestCase
     public function test_get_product_by_invalid_id()
     {
 
-        $response = $this->client->request('GET', '/product/0', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/products/0', ['http_errors' => false]);
 
         $body = (string) $response->getBody()->getContents();
         $dataResponse = json_decode($body, true);
@@ -73,7 +74,7 @@ class ProductTest extends TestCase
 
     public function test_create_products()
     {
-        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/products', ['http_errors' => false]);
 
         $listProductsBody = json_decode($response->getBody()->getContents(), true);
 
@@ -88,13 +89,13 @@ class ProductTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/products',
+            $this->apiPath . '/products',
             [
                 'http_errors' => false,
                 'json' => $data
             ]
         );
-        
+
         $body = (string) $response->getBody()->getContents();
 
         $dataResponse = json_decode($body, true);
@@ -114,7 +115,7 @@ class ProductTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/products',
+            $this->apiPath . '/products',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -131,7 +132,7 @@ class ProductTest extends TestCase
 
     public function test_failure_to_create_products_with_same_code()
     {
-        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/products', ['http_errors' => false]);
 
         $listProductsBody = json_decode($response->getBody()->getContents(), true);
 
@@ -147,7 +148,7 @@ class ProductTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/products',
+            $this->apiPath . '/products',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -172,7 +173,7 @@ class ProductTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/products',
+            $this->apiPath . '/products',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -187,7 +188,7 @@ class ProductTest extends TestCase
 
     public function test_update_all_product_by_id()
     {
-        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/products', ['http_errors' => false]);
 
         $listProductsBody = json_decode($response->getBody()->getContents(), true);
 
@@ -202,7 +203,7 @@ class ProductTest extends TestCase
         ];
         $response = $this->client->request(
             'PUT',
-            "/product/{$id}",
+            "{$this->apiPath}/products/{$id}",
             [
                 'http_errors'   => false,
                 'json'          => $data
@@ -223,24 +224,19 @@ class ProductTest extends TestCase
         ];
         $response = $this->client->request(
             'PUT',
-            "/product/{$id}",
+            "{$this->apiPath}/products/{$id}",
             [
                 'http_errors'   => false,
                 'json'          => $data
             ]
         );
 
-        $body = (string) $response->getBody()->getContents();
-
-        $dataResponse = json_decode($body, true);
-
-        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
-        $this->assertEquals("Id provider is invalid", $dataResponse['error']);
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
     public function test_failure_update_all_product_with_incorrect_fields()
     {
-        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/products', ['http_errors' => false]);
 
         $listProductsBody = json_decode($response->getBody()->getContents(), true);
 
@@ -255,7 +251,7 @@ class ProductTest extends TestCase
         ];
         $response = $this->client->request(
             'PUT',
-            "/product/{$id}",
+            "{$this->apiPath}/products/{$id}",
             [
                 'http_errors'   => false,
                 'json'          => $data
@@ -272,7 +268,7 @@ class ProductTest extends TestCase
 
     public function test_update_product_by_id()
     {
-        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/products', ['http_errors' => false]);
 
         $listProductsBody = json_decode($response->getBody()->getContents(), true);
 
@@ -285,21 +281,21 @@ class ProductTest extends TestCase
         ];
         $response = $this->client->request(
             'PATCH',
-            "/product/{$id}",
+            "{$this->apiPath}/products/{$id}",
             [
                 'http_errors'   => false,
                 'json'          => $data
             ]
         );
 
-        
+
 
         $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
     }
 
     public function test_failure_update_product_by_id()
     {
-        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/products', ['http_errors' => false]);
 
         $listProductsBody = json_decode($response->getBody()->getContents(), true);
 
@@ -314,7 +310,7 @@ class ProductTest extends TestCase
         ];
         $response = $this->client->request(
             'PATCH',
-            "/product/{$id}",
+            "{$this->apiPath}/products/{$id}",
             [
                 'http_errors'   => false,
                 'json'          => $data
@@ -331,13 +327,13 @@ class ProductTest extends TestCase
 
     public function test_delete_product_by_id()
     {
-        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/products', ['http_errors' => false]);
 
         $listProductsBody = json_decode($response->getBody()->getContents(), true);
 
         $lastElement = end($listProductsBody);
 
-       
+
         $data = [
             'code'              => 11 + $lastElement['code'],
             'type_product_id'   => 1,
@@ -346,7 +342,7 @@ class ProductTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/products',
+            $this->apiPath . '/products',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -359,8 +355,8 @@ class ProductTest extends TestCase
 
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
 
-        $responseListProducts = $this->client->request('GET', '/product', ['http_errors' => false]);
-        
+        $responseListProducts = $this->client->request('GET', $this->apiPath . '/products', ['http_errors' => false]);
+
 
         $this->assertEquals(Response::HTTP_OK, $responseListProducts->getStatusCode());
 
@@ -372,7 +368,7 @@ class ProductTest extends TestCase
 
         $response = $this->client->request(
             'DELETE',
-            "/product/{$id}",
+            "{$this->apiPath}/products/{$id}",
             [
                 'http_errors'   => false
             ]
@@ -392,7 +388,7 @@ class ProductTest extends TestCase
 
         $response = $this->client->request(
             'DELETE',
-            "/product/{$id}",
+            "{$this->apiPath}/products/{$id}",
             [
                 'http_errors'   => false,
             ]

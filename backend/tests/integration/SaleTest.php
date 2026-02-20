@@ -11,16 +11,18 @@ use GuzzleHttp\Client;
 class SaleTest extends TestCase
 {
     private Client $client;
+    private string $apiPath;
 
     protected function setUp(): void
     {
         $this->client = new Client(['base_uri' => 'http://host.docker.internal']);
+        $this->apiPath = '/api/v1';
     }
 
     public function test_get_sales()
     {
-        $response = $this->client->request('GET', '/sale', ['http_errors' => false]);
-        
+        $response = $this->client->request('GET', $this->apiPath . '/sales', ['http_errors' => false]);
+
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
 
         $body = json_decode($response->getBody()->getContents(), true);
@@ -30,8 +32,8 @@ class SaleTest extends TestCase
 
     public function test_get_sale_by_id()
     {
-    
-        $response = $this->client->request('GET', '/sale', ['http_errors' => false]);
+
+        $response = $this->client->request('GET', $this->apiPath . '/sales', ['http_errors' => false]);
 
         $listSalesBody = json_decode($response->getBody()->getContents(), true);
 
@@ -41,12 +43,12 @@ class SaleTest extends TestCase
 
         $response = $this->client->request(
             'GET',
-            "/sale/{$id}",
+            "{$this->apiPath}/sales/{$id}",
             [
                 'http_errors' => false
             ]
         );
-        
+
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
 
         $body = json_decode($response->getBody()->getContents(), true);
@@ -58,7 +60,7 @@ class SaleTest extends TestCase
     public function test_get_sale_by_invalid_id()
     {
 
-        $response = $this->client->request('GET', '/sale/0', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/sales/0', ['http_errors' => false]);
 
         $body = (string) $response->getBody()->getContents();
         $dataResponse = json_decode($body, true);
@@ -69,7 +71,7 @@ class SaleTest extends TestCase
 
     public function test_sale_order()
     {
-        $response = $this->client->request('GET', '/type', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/types', ['http_errors' => false]);
 
         $listTypesOfProductsBody = json_decode($response->getBody()->getContents(), true);
 
@@ -81,17 +83,17 @@ class SaleTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/types',
+            $this->apiPath . '/types',
             [
                 'http_errors' => false,
                 'json' => $data
             ]
         );
-        
-        $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode(), "Tipo de produto não inserido");
-    
 
-        $response = $this->client->request('GET', '/type', ['http_errors' => false]);
+        $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode(), "Tipo de produto não inserido");
+
+
+        $response = $this->client->request('GET', $this->apiPath . '/types', ['http_errors' => false]);
 
         $listTypesOfProductsBody = json_decode($response->getBody()->getContents(), true);
 
@@ -105,7 +107,7 @@ class SaleTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/taxes',
+            $this->apiPath . '/taxes',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -113,9 +115,9 @@ class SaleTest extends TestCase
         );
 
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode(), "Imposto de Produto não inserido");
-        
 
-        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+
+        $response = $this->client->request('GET', $this->apiPath . '/products', ['http_errors' => false]);
 
         $listProductsBody = json_decode($response->getBody()->getContents(), true);
 
@@ -130,7 +132,7 @@ class SaleTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/products',
+            $this->apiPath . '/products',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -138,14 +140,13 @@ class SaleTest extends TestCase
         );
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode(), "Produto não inserido");
 
-        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/products', ['http_errors' => false]);
 
         $listProductsBody = json_decode($response->getBody()->getContents(), true);
 
         $lastElement = end($listProductsBody);
 
         $product_id = $lastElement['id'];
-
 
         $data = [
             [
@@ -155,7 +156,7 @@ class SaleTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/sale/order',
+            $this->apiPath . '/sales/order',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -163,13 +164,11 @@ class SaleTest extends TestCase
         );
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode(), "Pedido não solicitado");
-       
-    
     }
 
     public function test_sale_pay()
     {
-        $response = $this->client->request('GET', '/type', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/types', ['http_errors' => false]);
 
         $listTypesOfProductsBody = json_decode($response->getBody()->getContents(), true);
 
@@ -181,16 +180,16 @@ class SaleTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/types',
+            $this->apiPath . '/types',
             [
                 'http_errors' => false,
                 'json' => $data
             ]
         );
-        
+
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode(), "Tipo de produto não inserido");
-    
-        $response = $this->client->request('GET', '/type', ['http_errors' => false]);
+
+        $response = $this->client->request('GET', $this->apiPath . '/types', ['http_errors' => false]);
 
         $listTypesOfProductsBody = json_decode($response->getBody()->getContents(), true);
 
@@ -204,7 +203,7 @@ class SaleTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/taxes',
+            $this->apiPath . '/taxes',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -212,9 +211,9 @@ class SaleTest extends TestCase
         );
 
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode(), "Imposto de Produto não inserido");
-        
 
-        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+
+        $response = $this->client->request('GET', $this->apiPath . '/products', ['http_errors' => false]);
 
         $listProductsBody = json_decode($response->getBody()->getContents(), true);
 
@@ -229,7 +228,7 @@ class SaleTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/products',
+            $this->apiPath . '/products',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -237,14 +236,13 @@ class SaleTest extends TestCase
         );
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode(), "Produto não inserido");
 
-        $response = $this->client->request('GET', '/product', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/products', ['http_errors' => false]);
 
         $listProductsBody = json_decode($response->getBody()->getContents(), true);
 
         $lastElement = end($listProductsBody);
 
         $product_id = $lastElement['id'];
-
 
         $data = [
             [
@@ -254,7 +252,7 @@ class SaleTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/sale/pay',
+            $this->apiPath . '/sales/pay',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -271,13 +269,13 @@ class SaleTest extends TestCase
                 'product_id'    => 2,
             ],
             [
-                'amount'        => 22    
+                'amount'        => 22
             ],
-            
+
         ];
         $response = $this->client->request(
             'POST',
-            '/sale/order',
+            $this->apiPath . '/sales/order',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -301,13 +299,13 @@ class SaleTest extends TestCase
             ],
             [
                 'product_id'    => 25,
-                'amount'        => -13    
+                'amount'        => -13
             ],
-            
+
         ];
         $response = $this->client->request(
             'POST',
-            '/sale/pay',
+            $this->apiPath . '/sales/pay',
             [
                 'http_errors' => false,
                 'json' => $data

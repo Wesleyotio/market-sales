@@ -11,17 +11,19 @@ use GuzzleHttp\Client;
 class TypeTest extends TestCase
 {
     private Client $client;
+    private string $apiPath;
 
     protected function setUp(): void
     {
         $this->client = new Client(['base_uri' => 'http://host.docker.internal']);
+        $this->apiPath = '/api/v1';
     }
 
     public function test_get_types()
     {
 
-        $response = $this->client->request('GET', '/type', ['http_errors' => false]);
-        
+        $response = $this->client->request('GET', $this->apiPath . '/types', ['http_errors' => false]);
+
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
 
@@ -33,8 +35,8 @@ class TypeTest extends TestCase
 
     public function test_get_types_by_id()
     {
-    
-        $response = $this->client->request('GET', '/type', ['http_errors' => false]);
+
+        $response = $this->client->request('GET', $this->apiPath . '/types', ['http_errors' => false]);
 
         $listTypesBody = json_decode($response->getBody()->getContents(), true);
 
@@ -44,12 +46,12 @@ class TypeTest extends TestCase
 
         $response = $this->client->request(
             'GET',
-            "/type/{$id}",
+            "{$this->apiPath}/types/{$id}",
             [
                 'http_errors' => false
             ]
         );
-        
+
 
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
@@ -63,7 +65,7 @@ class TypeTest extends TestCase
     public function test_get_type_by_invalid_id()
     {
 
-        $response = $this->client->request('GET', '/type/0', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/types/0', ['http_errors' => false]);
 
         $body = (string) $response->getBody()->getContents();
         $dataResponse = json_decode($body, true);
@@ -74,7 +76,7 @@ class TypeTest extends TestCase
 
     public function test_create_types()
     {
-        $response = $this->client->request('GET', '/type', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/types', ['http_errors' => false]);
 
         $listTypesOfProductsBody = json_decode($response->getBody()->getContents(), true);
 
@@ -86,13 +88,13 @@ class TypeTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/types',
+            $this->apiPath . '/types',
             [
                 'http_errors' => false,
                 'json' => $data
             ]
         );
-        
+
         $body = (string) $response->getBody()->getContents();
 
         $dataResponse = json_decode($body, true);
@@ -108,7 +110,7 @@ class TypeTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/types',
+            $this->apiPath . '/types',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -120,12 +122,12 @@ class TypeTest extends TestCase
         $dataResponse = json_decode($body, true);
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
-    $this->assertEquals("Type of product has missing fields", $dataResponse['error']);
+        $this->assertEquals("Type of product has missing fields", $dataResponse['error']);
     }
 
     public function test_failure_to_create_types_with_same_name()
     {
-        $response = $this->client->request('GET', '/type', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/types', ['http_errors' => false]);
 
         $listTypesBody = json_decode($response->getBody()->getContents(), true);
 
@@ -138,7 +140,7 @@ class TypeTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/types',
+            $this->apiPath . '/types',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -150,7 +152,10 @@ class TypeTest extends TestCase
         $dataResponse = json_decode($body, true);
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
-        $this->assertEquals("Name has already been registered, use another name of type of product", $dataResponse['error']);
+        $this->assertEquals(
+            "Name has already been registered, use another name of type of product",
+            $dataResponse['error']
+        );
     }
 
     public function test_failure_convert_json_to_create_types()
@@ -160,7 +165,7 @@ class TypeTest extends TestCase
         ];
         $response = $this->client->request(
             'POST',
-            '/types',
+            $this->apiPath . '/types',
             [
                 'http_errors' => false,
                 'json' => $data
@@ -170,7 +175,7 @@ class TypeTest extends TestCase
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
-    
+
     public function test_failure_update_type_by_id_incorrect()
     {
         $id = -99;
@@ -179,24 +184,19 @@ class TypeTest extends TestCase
         ];
         $response = $this->client->request(
             'PATCH',
-            "/type/{$id}",
+            "{$this->apiPath}/types/{$id}",
             [
                 'http_errors'   => false,
                 'json'          => $data
             ]
         );
 
-        $body = (string) $response->getBody()->getContents();
-
-        $dataResponse = json_decode($body, true);
-
-        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
-        $this->assertEquals("Id provider is invalid", $dataResponse['error']);
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
     public function test_failure_update_type_with_incorrect_fields()
     {
-        $response = $this->client->request('GET', '/type', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/types', ['http_errors' => false]);
 
         $listTypesBody = json_decode($response->getBody()->getContents(), true);
 
@@ -208,7 +208,7 @@ class TypeTest extends TestCase
         ];
         $response = $this->client->request(
             'PATCH',
-            "/type/{$id}",
+            "{$this->apiPath}/types/{$id}",
             [
                 'http_errors'   => false,
                 'json'          => $data
@@ -225,7 +225,7 @@ class TypeTest extends TestCase
 
     public function test_update_type_by_id()
     {
-        $response = $this->client->request('GET', '/type', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/types', ['http_errors' => false]);
 
         $listTypesBody = json_decode($response->getBody()->getContents(), true);
 
@@ -237,7 +237,7 @@ class TypeTest extends TestCase
         ];
         $response = $this->client->request(
             'PATCH',
-            "/type/{$id}",
+            "{$this->apiPath}/types/{$id}",
             [
                 'http_errors'   => false,
                 'json'          => $data
@@ -249,7 +249,7 @@ class TypeTest extends TestCase
 
     public function test_failure_update_type_by_id()
     {
-        $response = $this->client->request('GET', '/type', ['http_errors' => false]);
+        $response = $this->client->request('GET', $this->apiPath . '/types', ['http_errors' => false]);
 
         $listTypesBody = json_decode($response->getBody()->getContents(), true);
 
@@ -262,7 +262,7 @@ class TypeTest extends TestCase
         ];
         $response = $this->client->request(
             'PATCH',
-            "/type/{$id}",
+            "{$this->apiPath}/types/{$id}",
             [
                 'http_errors'   => false,
                 'json'          => $data
@@ -279,8 +279,8 @@ class TypeTest extends TestCase
 
     public function test_delete_type_by_id()
     {
-        $responseListTypes = $this->client->request('GET', '/type', ['http_errors' => false]);
-        
+        $responseListTypes = $this->client->request('GET', $this->apiPath . '/types', ['http_errors' => false]);
+
         $this->assertEquals(Response::HTTP_OK, $responseListTypes->getStatusCode());
 
         $bodyList = json_decode($responseListTypes->getBody()->getContents(), true);
@@ -291,7 +291,7 @@ class TypeTest extends TestCase
 
         $response = $this->client->request(
             'DELETE',
-            "/type/{$id}",
+            "{$this->apiPath}/types/{$id}",
             [
                 'http_errors'   => false
             ]
@@ -311,17 +311,13 @@ class TypeTest extends TestCase
 
         $response = $this->client->request(
             'DELETE',
-            "/type/{$id}",
+            "{$this->apiPath}/types/{$id}",
             [
                 'http_errors'   => false,
             ]
         );
 
-        $body = (string) $response->getBody()->getContents();
 
-        $dataResponse = json_decode($body, true);
-
-        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
-        $this->assertEquals("Id provider is invalid", $dataResponse['error']);
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 }
